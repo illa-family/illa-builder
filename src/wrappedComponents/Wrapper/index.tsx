@@ -3,12 +3,11 @@ import { WrapperProps } from "./interface"
 import { css } from "@emotion/react"
 
 export const Wrapper: FC<WrapperProps> = (props) => {
-  const { className, h, w } = props
+  const { className, h, w, alignment } = props
 
   const sizeCss = css`
     width: ${w ?? "fit-content"};
     height: ${h ?? "fit-content"};
-    border: solid 0.5px pink;
   `
 
   return (
