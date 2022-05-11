@@ -8,6 +8,8 @@ export const Wrapper: FC<WrapperProps> = (props) => {
   const sizeCss = css`
     width: ${w ?? "fit-content"};
     height: ${h ?? "fit-content"};
+    display: inline-flex;
+    border: dashed 1px pink;
   `
 
   return (
