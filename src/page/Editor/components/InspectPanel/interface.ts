@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export enum ACTION_TYPE {
   VIEW_DOCUMENT = "VIEW_DOCUMENT",
   SWITCH_COMPONENT = "SWITCH_COMPONENT",
@@ -7,6 +9,17 @@ export enum ACTION_TYPE {
 
 export interface HeaderProps {
   meta: any // TODO: wait meta interface
+}
+
+export interface SwitchProps {
+  value?: boolean
+  onChange?: (value: boolean) => void
+}
+
+export interface RadioGroupProps {
+  options?: { label: ReactNode; value: any; disabled?: boolean }[]
+  value?: string
+  onChange?: (value: boolean) => void
 }
 
 export interface HeaderActionProps {

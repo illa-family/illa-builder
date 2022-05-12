@@ -1,7 +1,7 @@
 import { FC } from "react"
 import PanelHeader from "./header"
 import { Divider } from "@illa-design/divider"
-import { PanelConfig } from "../PanelSetters/interface"
+import { PanelConfig } from "./interface"
 import { fieldFactory } from "./utils/fieldFactory"
 
 const mockData1: PanelConfig[] = [

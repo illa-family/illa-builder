@@ -32,6 +32,8 @@ export const labelTipsCss = css`
 
 export const singleInputCss = css`
   flex: 0 0 184px;
+  display: inline-flex;
+  justify-content: end;
 `
 
 export const singleSetterCss = css`
