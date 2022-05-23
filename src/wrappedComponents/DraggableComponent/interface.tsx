@@ -9,12 +9,12 @@ export interface BaseProps {
   props: {
     // WidgetPosition
     version: string
-    leftColumn?: number | string
-    rightColumn?: number | string
-    topRow?: number | string
-    bottomRow?: number | string
-    parentColumnSpace?: number
-    parentRowSpace?: number
+    leftColumn: number
+    rightColumn?: number
+    topRow: number
+    bottomRow?: number
+    parentColumnSpace: number
+    parentRowSpace: number
     //
     isVisible?: boolean
     isLoading?: boolean

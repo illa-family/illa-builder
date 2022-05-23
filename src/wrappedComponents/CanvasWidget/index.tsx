@@ -9,6 +9,8 @@ export const CANVAS_WIDGET_CONFIG = {
     version: "0.0.1",
     rows: 0,
     columns: 0,
+    parentRowSpace: 1,
+    parentColumnSpace: 1,
     width: "100%",
     height: "100%",
     widgetName: "Canvas",

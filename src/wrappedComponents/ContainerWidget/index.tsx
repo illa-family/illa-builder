@@ -9,7 +9,11 @@ import {
   widgetBuilder,
   WidgetTypeList,
 } from "@/wrappedComponents/WidgetBuilder"
-import { getTargetOffset } from "@/wrappedComponents/utils"
+import {
+  generateWidgetProps,
+  getTargetOffset,
+  WidgetConfig,
+} from "@/wrappedComponents/utils"
 import { ContainerWidgetProps } from "./interface"
 
 interface PanelDrag {
@@ -56,15 +60,11 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
         }
         if (item.type) {
           let monitorOffset = getTargetOffset(monitor?.getClientOffset(), id)
+          let config = generateWidgetProps(item as WidgetConfig, id, monitor?.getClientOffset())
           dispatch(
             dslActions.dslActionHandler({
               type: DslActionName.AddItem,
-              dslText: {
-                ...item,
-                props: { ...item.props, ...monitorOffset },
-                parentId: id,
-                id: "dsl" + uuidv4(),
-              },
+              dslText: config,
             }),
           )
           return {

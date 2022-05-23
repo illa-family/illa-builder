@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from "react"
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  CSSProperties,
+} from "react"
 import Moveable from "react-moveable"
 import { useDispatch, useSelector } from "react-redux"
 import { Frame } from "scenejs"
@@ -12,13 +19,18 @@ import {
   getFocusedWidget,
   getWidgetStates,
 } from "@/redux/selectors/editorSelectors/widgetStateSelectors"
-import { DraggableComponentProps } from "./interface"
+import { BaseProps, DraggableComponentProps } from "./interface"
+import { updateWidgetProps, WidgetConfig } from "../utils"
+
+export const WIDGET_PADDING = 4
 
 export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   const {
     children,
     id,
     parentId,
+    type,
+    props,
     props: {
       topRow,
       bottomRow,
@@ -77,16 +89,31 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
 
   const getSize = (num: number) => `${num ?? 0}px`
 
+  const getWidgetPositionStyle = (props: BaseProps["props"]): CSSProperties => {
+    const {
+      topRow,
+      bottomRow,
+      leftColumn,
+      rightColumn,
+      parentRowSpace = 1,
+      parentColumnSpace = 1,
+    } = props
+    return {
+      position: "absolute",
+      top: topRow * parentRowSpace,
+      left: leftColumn * parentColumnSpace,
+      width: !!rightColumn
+        ? (rightColumn - leftColumn) * parentColumnSpace
+        : "100%",
+      height: !!bottomRow ? (bottomRow - topRow) * parentRowSpace : "100%",
+      padding: id === MAIN_CONTAINER_ID ? "unset" : WIDGET_PADDING,
+    }
+  }
+
   return (
     <div
       id={id}
-      style={{
-        height: height,
-        width: width,
-        top: topRow,
-        left: leftColumn,
-        position: "absolute",
-      }}
+      style={getWidgetPositionStyle(props)}
       ref={wrapperRef}
       onClick={handleMouseOver}
     >
@@ -141,26 +168,19 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
         onDragEnd={() => {
           if (frame != null && target != null && ref != null) {
             const { children, ...currentProps } = baseProps
-            const lastFrame = new Frame(
-              `left: ${leftColumn ?? "0px"}; top: ${topRow ?? "0px"}`,
-            )
+            const lastFrame = new Frame(`left: ${leftColumn}; top: ${topRow}`)
+            let newProps = updateWidgetProps(currentProps as WidgetConfig, {
+              leftColumn:
+                parseFloat(lastFrame.get("left") ?? 0) +
+                parseFloat(frame.get("transform", "translateX") ?? 0),
+              topRow:
+                parseFloat(lastFrame.get("top") ?? 0) +
+                parseFloat(frame.get("transform", "translateY") ?? 0),
+            })
             dispatch(
               dslActions.dslActionHandler({
                 type: DslActionName.UpdateItem,
-                newDslText: {
-                  ...currentProps,
-                  props: {
-                    ...currentProps.props,
-                    leftColumn:
-                      parseFloat(lastFrame.get("left") ?? 0) +
-                      parseFloat(frame.get("transform", "translateX") ?? 0) +
-                      "px",
-                    topRow:
-                      parseFloat(lastFrame.get("top") ?? 0) +
-                      parseFloat(frame.get("transform", "translateY") ?? 0) +
-                      "px",
-                  },
-                },
+                newDslText: newProps,
               }),
             )
             target.style.cssText += new Frame(
