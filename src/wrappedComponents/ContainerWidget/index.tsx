@@ -1,8 +1,13 @@
 import { FC } from "react"
 import { DropTargetMonitor, useDrop } from "react-dnd"
 import { useDispatch, useSelector } from "react-redux"
+import { SearchIcon } from "@illa-design/icon"
 import { DropInfo, dslActions } from "@/redux/reducers/editorReducer/dslReducer"
 import { DslActionName } from "@/redux/reducers/editorReducer/dslReducer/dsl-action"
+import {
+  getDragDetails,
+  getWidgetStates,
+} from "@/redux/selectors/editorSelectors/widgetStateSelectors"
 import { DraggableComponent } from "@/wrappedComponents/DraggableComponent"
 import {
   widgetBuilder,
@@ -13,28 +18,27 @@ import {
   getTargetOffset,
   WidgetConfig,
 } from "@/wrappedComponents/utils"
-import { ContainerWidgetProps } from "./interface"
+import { ComponentModel } from "@/wrappedComponents/interface"
 import { DragLayerComponent } from "@/components/DragLayerComponent"
-import {
-  getDragDetails,
-  getWidgetStates,
-} from "@/redux/selectors/editorSelectors/widgetStateSelectors"
+import { ContainerWidgetProps } from "./interface"
 
 interface PanelDrag {
   type: string
   props: any
 }
 
-export const CONTAINER_WIDGET_CONFIG = {
+export const CONTAINER_WIDGET_CONFIG: ComponentModel = {
   type: "CONTAINER_WIDGET",
+  widgetName: "Container",
+  version: "0.0.1",
+  icon: <SearchIcon />,
+  sessionType: "COMMON",
   defaults: {
-    version: "0.0.1",
     backgroundColor: "#FFFFFF",
     rows: 40,
     columns: 24,
     width: "100%",
     height: "100%",
-    widgetName: "Container",
     containerStyle: "card",
     borderColor: "transparent",
     borderWidth: "0",
