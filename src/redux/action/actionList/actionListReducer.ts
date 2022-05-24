@@ -1,17 +1,20 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit"
-import { ActionItem } from "@/redux/action/actionList/actionListState"
+import {
+  ActionListState,
+  ActionItem,
+} from "@/redux/action/actionList/actionListState"
 
 export const addActionItemReducer: CaseReducer<
-  ActionState,
+  ActionListState,
   PayloadAction<string>
-> = (state, action) => {}
+> = (state, action) => { }
 
 export const updateActionItemReducer: CaseReducer<
-  ActionState,
+  ActionListState,
   PayloadAction<ActionItem>
-> = (state, action) => {}
+> = (state, action) => { }
 
 export const removeActionItemReducer: CaseReducer<
-  ActionState,
+  ActionListState,
   PayloadAction<string>
-> = (state, action) => {}
+> = (state, action) => { }

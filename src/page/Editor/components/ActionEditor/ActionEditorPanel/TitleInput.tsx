@@ -3,11 +3,10 @@ import { PenIcon } from "@illa-design/icon"
 import { Input } from "@illa-design/input"
 import { AnimatePresence, motion } from "framer-motion"
 import { useSelector, useDispatch } from "react-redux"
-import { BuilderState } from "@/redux/reducers/interface"
 import {
   updateActionItem,
   selectActionItemById,
-} from "@/redux/reducers/actionReducer/actionListReducer"
+} from "@/redux/action/actionList/actionListReducer"
 import {
   TitleContainerCSS,
   TitleEditIconCSS,
