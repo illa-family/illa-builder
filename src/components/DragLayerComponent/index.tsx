@@ -8,7 +8,10 @@ export interface DragLayerProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function DragLayerComponent(props: DragLayerProps) {
-  return <div css={applyDragLayer(props)} />
+  const { className } = props
+  return (
+    <div className={className} css={applyDragLayer(props)} />
+  )
 }
 
 DragLayerComponent.displayName = "DragLayerComponent"

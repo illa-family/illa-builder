@@ -5,3 +5,6 @@ export const getWidgetStates = (state: BuilderState) =>
 
 export const getFocusedWidget = (state: BuilderState) =>
   state.editor.present.widgetStates.focusedWidget
+
+export const getDragDetails = (state: BuilderState) =>
+  state.editor.present.widgetStates.dragDetails
