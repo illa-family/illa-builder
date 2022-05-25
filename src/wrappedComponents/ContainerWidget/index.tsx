@@ -21,6 +21,7 @@ import {
 import { ComponentModel } from "@/wrappedComponents/interface"
 import { DragLayerComponent } from "@/components/DragLayerComponent"
 import { ContainerWidgetProps } from "./interface"
+import { useDragWidget } from "@/page/Editor/hooks/useDragWidget"
 
 interface PanelDrag {
   type: string
@@ -61,6 +62,7 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
   const { isDragging, isResizing } = useSelector(getWidgetStates)
   const { draggedOn } = useSelector(getDragDetails)
   const showDragLayer = (isDragging && draggedOn === id) || isResizing
+  const { setDraggingNewWidget } = useDragWidget()
 
   const [collectProps, dropTarget] = useDrop<PanelDrag, DropInfo, Object>(
     () => ({
@@ -69,6 +71,7 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
         if (monitor.getDropResult<DropInfo>()?.hasDropped) {
           return monitor.getDropResult<DropInfo>()!!
         }
+        setDraggingNewWidget(false, undefined)
         if (item.type) {
           let monitorOffset = getTargetOffset(monitor?.getClientOffset(), id)
           let config = generateWidgetProps(
@@ -98,6 +101,9 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
 
   return (
     <DraggableComponent {...containerWidgetProps}>
+      {showDragLayer ? (
+        <DragLayerComponent columnWidth={10} rowHeight={10} noPad />
+      ) : null}
       <div
         ref={dropTarget}
         style={{
@@ -115,9 +121,6 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
           )
         })}
       </div>
-      {showDragLayer ? (
-        <DragLayerComponent columnWidth={10} rowHeight={10} noPad />
-      ) : null}
     </DraggableComponent>
   )
 }
