@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, createSelector } from "@reduxjs/toolkit"
 import { MAIN_CONTAINER_ID } from "@/page/Editor/constants/dragConfig"
 
 export type DraggingGroupCenter = {

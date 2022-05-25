@@ -3,7 +3,6 @@ import { Button, ButtonGroup } from "@illa-design/button"
 import { MoreIcon } from "@illa-design/icon"
 import { useTranslation } from "react-i18next"
 import { NavBarStyle } from "./style"
-import { Select } from "@illa-design/select"
 
 interface PageNavBarProps extends HTMLAttributes<HTMLDivElement> {}
 

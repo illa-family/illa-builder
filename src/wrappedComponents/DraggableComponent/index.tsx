@@ -62,7 +62,8 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   const { focusWidget, selectWidget } = useSelectWidget()
   const { setDraggingCanvas, setDraggingState } = useDragWidget()
   const focusedWidget = useSelector(getFocusedWidget)
-  const isCurrentWidgetFocused = focusedWidget === id
+  const isCurrentWidgetFocused =
+    focusedWidget === id && id !== MAIN_CONTAINER_ID
   const [frame, setFrame] = useState<Frame>()
 
   const onWindowResize = useCallback(() => {
@@ -79,12 +80,8 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   }, [onWindowResize])
 
   // When mouse is over this draggable
-  const handleMouseOver = (e: any) => {
-    focusWidget &&
-      !isResizingOrDragging &&
-      !isCurrentWidgetFocused &&
-      focusWidget(id)
-    e.stopPropagation()
+  const handleMouseOver = () => {
+    !isResizingOrDragging && !isCurrentWidgetFocused && focusWidget?.(id)
   }
 
   const getSize = (num: number) => `${num ?? 0}px`
@@ -111,23 +108,22 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   }
 
   return (
-    <div
-      id={id}
-      style={getWidgetPositionStyle(props)}
-      ref={wrapperRef}
-      onClick={handleMouseOver}
-    >
+    <div id={id} style={getWidgetPositionStyle(props)} ref={wrapperRef}>
       <Moveable
         ref={ref}
         target={target}
         throttleDrag={1}
         keepRatio={false}
-        draggable={id !== MAIN_CONTAINER_ID}
-        resizable={id !== MAIN_CONTAINER_ID}
+        draggable={isCurrentWidgetFocused}
+        resizable={isCurrentWidgetFocused}
         scalable={false}
         rotatable={false}
         origin={false}
-        renderDirections={id !== MAIN_CONTAINER_ID}
+        renderDirections={isCurrentWidgetFocused}
+        onClick={(e) => {
+          console.log(isCurrentWidgetFocused)
+          !isResizingOrDragging && !isCurrentWidgetFocused && focusWidget?.(id)
+        }}
         onDragStart={(e) => {
           if (!isCurrentWidgetSelected) {
             selectWidget(id)
@@ -149,6 +145,7 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
             frame.set("transform", "translateX", `0px`)
             frame.set("transform", "translateY", `0px`)
           }
+          handleMouseOver()
         }}
         onDrag={(translate) => {
           if (frame != null) {
@@ -187,6 +184,9 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
               "transform: translateX(0px) translateY(0px)",
             ).toCSS()
           }
+          setDraggingState({
+            isDragging: false,
+          })
         }}
       />
       {children}
