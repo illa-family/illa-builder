@@ -12,12 +12,19 @@ import {
   getFocusedWidget,
   getWidgetStates,
 } from "@/redux/editor/widgetStates/widgetStateSelector"
+import { useDrag, useDragLayer } from "react-dnd"
+import { css } from "@emotion/react"
+import { getEmptyImage } from "react-dnd-html5-backend"
+import { applyWidgetStyle } from "@/wrappedComponents/DraggableComponent/style"
 
 export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   const {
     children,
     id,
     parentId,
+    type,
+    props,
+    widgetName,
     props: {
       topRow,
       bottomRow,
@@ -30,11 +37,18 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
       width,
       height,
     },
+    ...rest
   } = baseProps
+  const previewId = "preview" + id
   const dispatch = useDispatch()
   const ref = useRef<Moveable>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
   const [target, setTarget] = useState<HTMLDivElement | null>()
+  const [offset, setOffset] = useState({
+    topRow,
+    leftColumn,
+  })
   const isPreviewMode = useSelector(getPreviewMode)
   const { isDragging, isResizing, isDraggingDisabled, selectedWidgets } =
     useSelector(getWidgetStates)
@@ -49,7 +63,7 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   const { focusWidget, selectWidget } = useSelectWidget()
   const { setDraggingCanvas, setDraggingState } = useDragWidget()
   const focusedWidget = useSelector(getFocusedWidget)
-  const isCurrentWidgetFocused = focusedWidget === id
+  const isCurrentWidgetFocused = focusedWidget === id && id !== MAIN_CONTAINER_ID
   const [frame, setFrame] = useState<Frame>()
 
   const onWindowResize = useCallback(() => {
@@ -66,15 +80,93 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   }, [onWindowResize])
 
   // When mouse is over this draggable
-  const handleMouseOver = (e: any) => {
+  const handleFocus = () => {
     focusWidget &&
       !isResizingOrDragging &&
       !isCurrentWidgetFocused &&
       focusWidget(id)
-    e.stopPropagation()
   }
 
-  const getSize = (num: number) => `${num ?? 0}px`
+  const {
+    itemType,
+    item,
+    widgetDragging,
+    differenceOffsetTop,
+    differenceOffsetLeft,
+  } = useDragLayer((monitor) => {
+    const dragType = monitor.getItemType()
+    const item = monitor.getItem()
+    const differenceOffsetTop = monitor.getDifferenceFromInitialOffset()?.y ?? 0
+    const differenceOffsetLeft =
+      monitor.getDifferenceFromInitialOffset()?.x ?? 0
+
+    return {
+      item,
+      itemType: monitor.getItemType(),
+      widgetDragging:
+        monitor.isDragging() && dragType === "dragWidget" && item?.id === id,
+      differenceOffsetTop,
+      differenceOffsetLeft,
+    }
+  })
+
+  const [{ opacity }, drag, dragPreview] = useDrag(() => {
+    return {
+      type: "dragWidget",
+      item: {
+        id,
+        width,
+        height,
+        topRow,
+        bottomRow,
+        leftColumn,
+        rightColumn,
+      },
+      collect: (monitor) => ({
+        opacity: monitor.isDragging() ? 0 : 1,
+      }),
+      end: (item, monitor) => {
+        const differenceOffsetTop =
+          monitor.getDifferenceFromInitialOffset()?.y ?? 0
+        const differenceOffsetLeft =
+          monitor.getDifferenceFromInitialOffset()?.x ?? 0
+
+        const parent = window.document.querySelector<HTMLDivElement>(`#${id}`)
+        const offset = {
+          topRow:
+            parseFloat(parent?.style?.top?.slice(0, -2) ?? "0") +
+            differenceOffsetTop +
+            "px",
+          leftColumn:
+            parseFloat(parent?.style?.left?.slice(0, -2) ?? "0") +
+            differenceOffsetLeft +
+            "px",
+        }
+        const { children, ...currentProps } = baseProps
+        dispatch(
+          dslActions.dslActionHandler({
+            type: "UpdateItem",
+            dslFrame: {
+              ...currentProps,
+              props: {
+                ...currentProps.props,
+                ...offset,
+              },
+            },
+          }),
+        )
+        setDraggingState({
+          isDragging: false,
+        })
+      },
+      canDrag: id !== MAIN_CONTAINER_ID,
+      dropEffect: "move",
+    }
+  }, [])
+
+  useEffect(() => {
+    dragPreview(getEmptyImage(), { captureDraggingState: true })
+  }, [])
 
   return (
     <div
@@ -86,92 +178,48 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
         left: leftColumn,
         position: "absolute",
       }}
+      css={applyWidgetStyle(isCurrentWidgetFocused)}
       ref={wrapperRef}
-      onClick={handleMouseOver}
+      {...rest}
     >
-      <Moveable
-        ref={ref}
-        target={target}
-        throttleDrag={1}
-        keepRatio={false}
-        draggable={id !== MAIN_CONTAINER_ID}
-        resizable={id !== MAIN_CONTAINER_ID}
-        scalable={false}
-        rotatable={false}
-        origin={false}
-        renderDirections={id !== MAIN_CONTAINER_ID}
-        onDragStart={(e) => {
+      {widgetDragging ? (
+        <div
+          ref={previewRef}
+          id={previewId}
+          css={css`
+            position: absolute;
+            top: 0;
+            border: solid 0.5px #654aec;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform: translateX(${differenceOffsetLeft}px)
+              translateY(${differenceOffsetTop}px);
+          `}
+        />
+      ) : null}
+      <div
+        ref={id !== MAIN_CONTAINER_ID ? drag : null}
+        style={{
+          width: "100%",
+          height: "100%",
+          opacity,
+        }}
+        onDragStart={() => {
           if (!isCurrentWidgetSelected) {
             selectWidget(id)
           }
-          const bounds = e.target.getBoundingClientRect()
-          const startPoints = {
-            top: bounds.top,
-            left: bounds.left,
-          }
-          parentId && setDraggingCanvas(parentId)
+          handleFocus()
+          parentId && setDraggingCanvas(id)
           setDraggingState({
             isDragging: true,
             dragGroupActualParent: parentId || "",
             draggingGroupCenter: { id: id },
-            startPoints,
           })
-          // set frame
-          if (frame != null) {
-            frame.set("transform", "translateX", `0px`)
-            frame.set("transform", "translateY", `0px`)
-          }
         }}
-        onDrag={(translate) => {
-          if (frame != null) {
-            frame.set(
-              "transform",
-              "translateX",
-              `${translate.beforeTranslate[0]}px`,
-            )
-            frame.set(
-              "transform",
-              "translateY",
-              `${translate.beforeTranslate[1]}px`,
-            )
-            translate.target.style.cssText += frame.toCSS()
-          }
-        }}
-        onDragEnd={() => {
-          if (frame != null && target != null && ref != null) {
-            const { children, ...currentProps } = baseProps
-            const lastFrame = new Frame(
-              `left: ${leftColumn ?? "0px"}; top: ${topRow ?? "0px"}`,
-            )
-            dispatch(
-              dslActions.dslActionHandler({
-                type: "UpdateItem",
-                dslFrame: {
-                  ...currentProps,
-                  props: {
-                    ...currentProps.props,
-                    leftColumn:
-                      parseFloat(lastFrame.get("left") ?? 0) +
-                      parseFloat(frame.get("transform", "translateX") ?? 0) +
-                      "px",
-                    topRow:
-                      parseFloat(lastFrame.get("top") ?? 0) +
-                      parseFloat(frame.get("transform", "translateY") ?? 0) +
-                      "px",
-                  },
-                },
-              }),
-            )
-            target.style.cssText += new Frame(
-              "transform: translateX(0px) translateY(0px)",
-            ).toCSS()
-            setDraggingState({
-              isDragging: false,
-            })
-          }
-        }}
-      />
-      {children}
+      >
+        {children}
+      </div>
     </div>
   )
 }

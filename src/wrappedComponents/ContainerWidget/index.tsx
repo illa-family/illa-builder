@@ -1,5 +1,5 @@
-import { FC } from "react"
-import { DropTargetMonitor, useDrop } from "react-dnd"
+import { FC, useEffect, useRef } from "react"
+import { DropTargetMonitor, useDragLayer, useDrop } from "react-dnd"
 import { useDispatch, useSelector } from "react-redux"
 import { v4 as uuidv4 } from "uuid"
 import { DropInfo } from "@/redux/editor/dsl/dslState"
@@ -19,6 +19,7 @@ import {
 } from "@/redux/editor/widgetStates/widgetStateSelector"
 import { DragLayerComponent } from "@/components/DragLayerComponent"
 import { useDragWidget } from "@/page/Editor/hooks/useDragWidget"
+import { css } from "@emotion/react"
 
 interface PanelDrag {
   type: string
@@ -53,13 +54,27 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
     props,
     id,
     type,
+    parentId,
+      widgetName,
     props: { topRow, leftColumn },
+      ...rest
   } = containerWidgetProps
   const dispatch = useDispatch()
   const { isDragging, isResizing } = useSelector(getWidgetStates)
   const { draggedOn } = useSelector(getDragDetails)
   const showDragLayer = isDragging || isResizing
   const { setDraggingNewWidget } = useDragWidget()
+
+  const { item } = useDragLayer((monitor) => {
+    const dragType = monitor.getItemType()
+    const item = monitor.getItem()
+
+    return {
+      item,
+      itemType: monitor.getItemType(),
+      widgetDragging: monitor.isDragging() && dragType === "dragWidget",
+    }
+  })
 
   const [collectProps, dropTarget] = useDrop<DragInfo>(
     () => ({
@@ -97,14 +112,15 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
   )
 
   return (
-    <DraggableComponent {...containerWidgetProps}>
-      <div
-        ref={dropTarget}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-      >
+    <div
+      ref={dropTarget}
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+      {...rest}
+    >
+      <DraggableComponent {...containerWidgetProps}>
         {showDragLayer ? <DragLayerComponent /> : null}
         {children?.map((value) => {
           const { type } = value
@@ -115,8 +131,8 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
             </DraggableComponent>
           )
         })}
-      </div>
-    </DraggableComponent>
+      </DraggableComponent>
+    </div>
   )
 }
 
