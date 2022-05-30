@@ -1,5 +1,1 @@
 export * from "./illaLogo"
-export * from "./bug"
-export * from "./windowBottom"
-export * from "./windowLeft"
-export * from "./windowRight"
