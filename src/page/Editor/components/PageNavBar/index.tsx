@@ -1,6 +1,13 @@
 import { FC, HTMLAttributes } from "react"
 import { Button, ButtonGroup } from "@illa-design/button"
-import { MoreIcon, CaretRightIcon } from "@illa-design/icon"
+import {
+  BugIcon,
+  MoreIcon,
+  CaretRightIcon,
+  WindowBottomIcon,
+  WindowLeftIcon,
+  WindowRightIcon,
+} from "@illa-design/icon"
 import { useTranslation } from "react-i18next"
 import {
   descriptionStyle,
@@ -10,13 +17,7 @@ import {
   rowCenter,
   viewControlStyle,
 } from "./style"
-import {
-  BugIcon,
-  IllaLogoIcon,
-  WindowBottomIcon,
-  WindowLeftIcon,
-  WindowRightIcon,
-} from "@/assets/icon"
+import { IllaLogoIcon } from "@/assets/icon"
 import { ZoomControl } from "@/page/Editor/components/PageNavBar/ZoomControl"
 import { useDispatch, useSelector } from "react-redux"
 import { getPreviewMode } from "@/redux/editor/mode/modeSelector"
