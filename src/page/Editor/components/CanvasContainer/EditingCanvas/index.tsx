@@ -7,18 +7,15 @@ import {
 } from "@/redux/currentApp/editor/widgetStates/widgetStateSelector"
 
 export const EditingCanvas: FC = (props) => {
-  const { isDragging, isResizing, dragDetails } = useSelector(getWidgetStates)
-  const isResizingOrDragging = !!isResizing || !!isDragging
+  const { dragDetails } = useSelector(getWidgetStates)
   const edit = useSelector(getEditing)
 
-  console.log(edit, "editing")
   return (
     <div css={controlStyle}>
       {edit?.map((item) => {
         const offset = dragDetails[item?.id ?? ""]?.dragOffset
         const differenceOffsetLeft = offset?.differenceOffsetLeft ?? 0
         const differenceOffsetTop = offset?.differenceOffsetTop ?? 0
-        console.log(item?.id, offset, "map")
         return (
           <div
             style={{
