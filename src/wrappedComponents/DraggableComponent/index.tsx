@@ -4,13 +4,13 @@ import { Frame } from "scenejs"
 import { MAIN_CONTAINER_ID } from "@/page/Editor/constants/dragConfig"
 import { useDragWidget } from "@/page/Editor/hooks/useDragWidget"
 import { useSelectWidget } from "@/page/Editor/hooks/useSelectWidget"
-import { dslActions } from "@/redux/editor/dsl/dslSlice"
+import { dslActions } from "@/redux/currentApp/editor/dsl/dslSlice"
 import { DraggableComponentProps } from "./interface"
-import { getPreviewMode } from "@/redux/editor/mode/modeSelector"
+import { getPreviewMode } from "@/redux/currentApp/editor/mode/modeSelector"
 import {
   getFocusedWidget,
   getWidgetStates,
-} from "@/redux/editor/widgetStates/widgetStateSelector"
+} from "@/redux/currentApp/editor/widgetStates/widgetStateSelector"
 import { useDrag, useDragLayer } from "react-dnd"
 import { css } from "@emotion/react"
 import { getEmptyImage } from "react-dnd-html5-backend"
@@ -199,7 +199,7 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
             startPoints: {
               top: topRow,
               left: leftColumn,
-            }
+            },
           })
         }}
       >
