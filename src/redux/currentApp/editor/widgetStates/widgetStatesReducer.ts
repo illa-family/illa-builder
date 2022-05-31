@@ -1,40 +1,54 @@
 import { CaseReducer, PayloadAction } from "@reduxjs/toolkit"
 import { MAIN_CONTAINER_ID } from "@/page/Editor/constants"
-import { DraggingGroupCenter, WidgetDragResizeState } from "./widgetStatesState"
+import { WidgetDragResizeState } from "./widgetStatesState"
+import {
+  SetNewWidgetDraggingPayload,
+  SetWidgetDraggingPayload,
+} from "./widgetStatesPayload"
+import { v4 as uuidv4 } from "uuid"
 
 export const setNewWidgetDragging: CaseReducer<
   WidgetDragResizeState,
-  PayloadAction<{
-    isDragging: boolean
-    widgetProps: any
-  }>
+  PayloadAction<SetNewWidgetDraggingPayload>
 > = (state, action) => {
-  const { isDragging, widgetProps } = action.payload
+  const {
+    isDragging,
+    widgetProps,
+    widgetProps: { id },
+  } = action.payload
   state.isDragging = isDragging
-  state.dragDetails = {
-    newWidget: widgetProps,
-    draggedOn: MAIN_CONTAINER_ID,
+  const newId = id ?? "newId"
+  if (isDragging) {
+    state.dragDetails[newId] = {
+      newWidget: widgetProps,
+      draggedOn: MAIN_CONTAINER_ID,
+    }
+  } else {
+    delete state.dragDetails[newId]
   }
 }
 
 export const setWidgetDragging: CaseReducer<
   WidgetDragResizeState,
-  PayloadAction<{
-    isDragging: boolean
-    dragGroupActualParent: string
-    draggingGroupCenter: DraggingGroupCenter
-    startPoints?: any
-    dragOffset?: any
-  }>
+  PayloadAction<SetWidgetDraggingPayload>
 > = (state, action) => {
   const {
     isDragging,
+    id,
+    dragGroupActualParent = "",
+    draggingGroupCenter = {},
     ...rest
   } = action.payload
 
   state.isDragging = isDragging
-  state.dragDetails = {
-    ...rest
+
+  if (isDragging && id) {
+    state.dragDetails[id] = {
+      ...state.dragDetails[id],
+      ...rest,
+    }
+  } else {
+    delete state.dragDetails[id ?? ""]
   }
 }
 
@@ -42,9 +56,14 @@ export const setDraggingOn: CaseReducer<
   WidgetDragResizeState,
   PayloadAction<{
     draggedOn: string
+    id: string
   }>
 > = (state, action) => {
-  state.dragDetails.draggedOn = action.payload.draggedOn
+  const { draggedOn, id } = action.payload
+
+  state.dragDetails[id] = {
+    draggedOn,
+  }
 }
 
 // resize

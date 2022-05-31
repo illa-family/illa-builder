@@ -16,7 +16,7 @@ export interface DragDetails {
 export interface WidgetDragResizeState {
   isDraggingDisabled: boolean
   isDragging: boolean
-  dragDetails: DragDetails
+  dragDetails: Record<string, DragDetails>
   isResizing: boolean
   lastSelectedWidget?: string
   focusedWidget?: string

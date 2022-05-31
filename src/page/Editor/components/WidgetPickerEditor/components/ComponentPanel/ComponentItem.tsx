@@ -33,8 +33,7 @@ export const ComponentItem: FC<ComponentModel> = (props) => {
       css={itemContainerCss}
       ref={dragRef}
       onDragStart={() => {
-        setDraggingNewWidget?.(true, {
-          ...rest,
+        setDraggingNewWidget(true, {
           type,
           props: defaults,
         })

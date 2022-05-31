@@ -86,15 +86,6 @@ export const PageNavBar: FC<PageNavBarProps> = (props) => {
           >
             {t("deploy")}
           </Button>
-          <Button
-            colorScheme="techPurple"
-            size="medium"
-            onClick={() => {
-              i18n.changeLanguage("zh")
-            }}
-          >
-            changeLanguage
-          </Button>
         </ButtonGroup>
       </div>
     </div>

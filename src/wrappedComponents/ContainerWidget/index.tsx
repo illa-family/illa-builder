@@ -55,9 +55,9 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
     id,
     type,
     parentId,
-      widgetName,
+    widgetName,
     props: { topRow, leftColumn },
-      ...rest
+    ...rest
   } = containerWidgetProps
   const dispatch = useDispatch()
   const { isDragging, isResizing } = useSelector(getWidgetStates)
@@ -83,7 +83,8 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
         if (monitor.getDropResult<DropInfo>()?.hasDropped) {
           return monitor.getDropResult<DropInfo>()!!
         }
-        setDraggingNewWidget(false, undefined)
+        console.log("setDraggingNewWidget", item.props)
+        setDraggingNewWidget(false, {})
         if (item.type) {
           let monitorOffset = getTargetOffset(monitor?.getClientOffset(), id)
           dispatch(

@@ -1,6 +1,7 @@
 import { useCallback } from "react"
 import { useDispatch } from "react-redux"
 import { widgetStatesActions } from "@/redux/currentApp/editor/widgetStates/widgetStatesSlice"
+import { SetWidgetDraggingPayload } from "@/redux/currentApp/editor/widgetStates/widgetStatesPayload"
 
 export const useDragWidget = () => {
   const dispatch = useDispatch()
@@ -21,17 +22,12 @@ export const useDragWidget = () => {
     setDraggingState: useCallback(
       ({
         isDragging,
-        dragGroupActualParent = "",
-        draggingGroupCenter = {},
-        startPoints,
+        dragGroupActualParent,
+        draggingGroupCenter,
+        id,
         dragOffset,
-      }: {
-        isDragging: boolean
-        dragGroupActualParent?: string
-        draggingGroupCenter?: Record<string, any>
-        startPoints?: any
-        dragOffset?: any
-      }) => {
+        startPoints,
+      }: SetWidgetDraggingPayload) => {
         if (isDragging) {
           document.body.classList.add("dragging")
         } else {
@@ -42,16 +38,17 @@ export const useDragWidget = () => {
             isDragging,
             dragGroupActualParent,
             draggingGroupCenter,
-            startPoints,
+            id,
             dragOffset,
+            startPoints,
           }),
         )
       },
       [dispatch],
     ),
     setDraggingCanvas: useCallback(
-      (draggedOn: string) => {
-        widgetStatesActions.setDraggingOn({ draggedOn })
+      (id: string, draggedOn: string) => {
+        widgetStatesActions.setDraggingOn({ id, draggedOn })
       },
       [dispatch],
     ),

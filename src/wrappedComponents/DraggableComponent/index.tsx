@@ -81,6 +81,8 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   } = useDragLayer((monitor) => {
     const dragType = monitor.getItemType()
     const item = monitor.getItem()
+    const widgetDragging =
+      monitor.isDragging() && dragType === "dragWidget" && item?.id === id
     const differenceOffsetTop = monitor.getDifferenceFromInitialOffset()?.y ?? 0
     const differenceOffsetLeft =
       monitor.getDifferenceFromInitialOffset()?.x ?? 0
@@ -88,12 +90,26 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
     return {
       item,
       itemType: monitor.getItemType(),
-      widgetDragging:
-        monitor.isDragging() && dragType === "dragWidget" && item?.id === id,
+      widgetDragging,
       differenceOffsetTop,
       differenceOffsetLeft,
     }
   })
+
+  useEffect(() => {
+    if (widgetDragging) {
+      setDraggingState({
+        isDragging: true,
+        dragGroupActualParent: parentId || "",
+        draggingGroupCenter: { id: id },
+        id,
+        dragOffset: {
+          differenceOffsetTop,
+          differenceOffsetLeft,
+        },
+      })
+    }
+  }, [widgetDragging, differenceOffsetTop, differenceOffsetLeft])
 
   const [{ opacity }, drag, dragPreview] = useDrag(() => {
     return {
@@ -138,6 +154,7 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
         )
         setDraggingState({
           isDragging: false,
+          id,
         })
       },
       canDrag: id !== MAIN_CONTAINER_ID,
@@ -159,26 +176,9 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
         left: leftColumn,
         position: "absolute",
       }}
-      css={applyWidgetStyle(isCurrentWidgetFocused)}
       ref={wrapperRef}
       {...rest}
     >
-      {widgetDragging ? (
-        <div
-          ref={previewRef}
-          id={previewId}
-          css={css`
-            position: absolute;
-            top: 0;
-            border: solid 0.5px #654aec;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            transform: translateX(${differenceOffsetLeft}px)
-              translateY(${differenceOffsetTop}px);
-          `}
-        />
-      ) : null}
       <div
         ref={id !== MAIN_CONTAINER_ID ? drag : null}
         style={{
@@ -186,20 +186,17 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
           height: "100%",
           opacity,
         }}
+        css={applyWidgetStyle(id, isCurrentWidgetFocused)}
         onDragStart={() => {
           if (!isCurrentWidgetSelected) {
             selectWidget(id)
           }
           handleFocus()
-          parentId && setDraggingCanvas(id)
+          parentId && setDraggingCanvas(id, id)
           setDraggingState({
             isDragging: true,
             dragGroupActualParent: parentId || "",
             draggingGroupCenter: { id: id },
-            startPoints: {
-              top: topRow,
-              left: leftColumn,
-            },
           })
         }}
       >

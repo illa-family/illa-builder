@@ -21,6 +21,7 @@ export function applyDragLayer(props: DragLayerProps): SerializedStyles {
       ${globalColor(`--${illaPrefix}-grayBlue-08`)} ${GRID_POINT_SIZE}px,
       transparent 0
     );
-    background-size: calc(100% / ${GridDefaults.DEFAULT_GRID_COLUMNS}) ${GridDefaults.DEFAULT_GRID_ROW_HEIGHT}px;
+    background-size: calc(100% / ${GridDefaults.DEFAULT_GRID_COLUMNS})
+      ${GridDefaults.DEFAULT_GRID_ROW_HEIGHT}px;
   `
 }
