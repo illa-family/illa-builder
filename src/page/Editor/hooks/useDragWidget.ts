@@ -24,11 +24,13 @@ export const useDragWidget = () => {
         dragGroupActualParent = "",
         draggingGroupCenter = {},
         startPoints,
+        dragOffset,
       }: {
         isDragging: boolean
         dragGroupActualParent?: string
         draggingGroupCenter?: Record<string, any>
         startPoints?: any
+        dragOffset?: any
       }) => {
         if (isDragging) {
           document.body.classList.add("dragging")
@@ -41,6 +43,7 @@ export const useDragWidget = () => {
             dragGroupActualParent,
             draggingGroupCenter,
             startPoints,
+            dragOffset,
           }),
         )
       },

@@ -2,18 +2,11 @@ import { css } from "@emotion/react"
 import { SerializedStyles } from "@emotion/serialize"
 import { globalColor, illaPrefix } from "@illa-design/theme"
 import { DragLayerProps } from "./index"
-
-export const GridDefaults = {
-  DEFAULT_CELL_SIZE: 1,
-  DEFAULT_WIDGET_WIDTH: 200,
-  DEFAULT_WIDGET_HEIGHT: 100,
-  DEFAULT_GRID_COLUMNS: 64,
-  DEFAULT_GRID_ROW_HEIGHT: 10,
-  CANVAS_EXTENSION_OFFSET: 2,
-}
-
-const CONTAINER_GRID_PADDING = 6
-const GRID_POINT_SIZE = 1
+import {
+  CONTAINER_GRID_PADDING,
+  GRID_POINT_SIZE,
+  GridDefaults,
+} from "@/page/Editor/constants"
 
 export function applyDragLayer(props: DragLayerProps): SerializedStyles {
   return css`
@@ -28,6 +21,6 @@ export function applyDragLayer(props: DragLayerProps): SerializedStyles {
       ${globalColor(`--${illaPrefix}-grayBlue-08`)} ${GRID_POINT_SIZE}px,
       transparent 0
     );
-    background-size: calc(100% / ${GridDefaults.DEFAULT_GRID_COLUMNS}) 8px;
+    background-size: calc(100% / ${GridDefaults.DEFAULT_GRID_COLUMNS}) ${GridDefaults.DEFAULT_GRID_ROW_HEIGHT}px;
   `
 }

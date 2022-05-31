@@ -97,10 +97,6 @@ export const ContainerWidget: FC<ContainerWidgetProps> = (
               },
             }),
           )
-          return {
-            parent: containerWidgetProps,
-            hasDropped: true,
-          } as DropInfo
         }
         return {
           parent: containerWidgetProps,

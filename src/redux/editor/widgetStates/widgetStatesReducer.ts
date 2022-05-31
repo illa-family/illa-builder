@@ -23,21 +23,18 @@ export const setWidgetDragging: CaseReducer<
     isDragging: boolean
     dragGroupActualParent: string
     draggingGroupCenter: DraggingGroupCenter
-    startPoints: any
+    startPoints?: any
+    dragOffset?: any
   }>
 > = (state, action) => {
   const {
     isDragging,
-    dragGroupActualParent,
-    draggingGroupCenter,
-    startPoints,
+    ...rest
   } = action.payload
 
   state.isDragging = isDragging
   state.dragDetails = {
-    dragGroupActualParent,
-    draggingGroupCenter,
-    dragOffset: startPoints,
+    ...rest
   }
 }
 

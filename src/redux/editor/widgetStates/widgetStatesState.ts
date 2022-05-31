@@ -10,6 +10,7 @@ export interface DragDetails {
   newWidget?: any
   draggedOn?: string
   dragOffset?: any
+  startPoints?: any
 }
 
 export interface WidgetDragResizeState {

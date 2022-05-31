@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from "react"
-import Moveable from "react-moveable"
 import { useDispatch, useSelector } from "react-redux"
 import { Frame } from "scenejs"
 import { MAIN_CONTAINER_ID } from "@/page/Editor/constants/dragConfig"
@@ -15,7 +14,7 @@ import {
 import { useDrag, useDragLayer } from "react-dnd"
 import { css } from "@emotion/react"
 import { getEmptyImage } from "react-dnd-html5-backend"
-import { applyWidgetStyle } from "@/wrappedComponents/DraggableComponent/style"
+import { applyWidgetStyle } from "./style"
 
 export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   const {
@@ -41,7 +40,6 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   } = baseProps
   const previewId = "preview" + id
   const dispatch = useDispatch()
-  const ref = useRef<Moveable>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const [target, setTarget] = useState<HTMLDivElement | null>()
@@ -63,21 +61,8 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
   const { focusWidget, selectWidget } = useSelectWidget()
   const { setDraggingCanvas, setDraggingState } = useDragWidget()
   const focusedWidget = useSelector(getFocusedWidget)
-  const isCurrentWidgetFocused = focusedWidget === id && id !== MAIN_CONTAINER_ID
-  const [frame, setFrame] = useState<Frame>()
-
-  const onWindowResize = useCallback(() => {
-    ref.current!!.updateTarget()
-  }, [])
-
-  useEffect(() => {
-    setTarget(window.document.querySelector<HTMLDivElement>(`#${id}`))
-    setFrame(new Frame("transform: translateX(0px) translateY(0px)"))
-    window.addEventListener("resize", onWindowResize)
-    return () => {
-      window.removeEventListener("resize", onWindowResize)
-    }
-  }, [onWindowResize])
+  const isCurrentWidgetFocused =
+    focusedWidget === id && id !== MAIN_CONTAINER_ID
 
   // When mouse is over this draggable
   const handleFocus = () => {
@@ -115,23 +100,19 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
       type: "dragWidget",
       item: {
         id,
-        width,
-        height,
-        topRow,
-        bottomRow,
-        leftColumn,
-        rightColumn,
+        hasDropped: false,
+        type: "dragWidget",
       },
       collect: (monitor) => ({
         opacity: monitor.isDragging() ? 0 : 1,
       }),
       end: (item, monitor) => {
+        const { children, props, ...currentProps } = baseProps
+        const parent = window.document.querySelector<HTMLDivElement>(`#${id}`)
         const differenceOffsetTop =
           monitor.getDifferenceFromInitialOffset()?.y ?? 0
         const differenceOffsetLeft =
           monitor.getDifferenceFromInitialOffset()?.x ?? 0
-
-        const parent = window.document.querySelector<HTMLDivElement>(`#${id}`)
         const offset = {
           topRow:
             parseFloat(parent?.style?.top?.slice(0, -2) ?? "0") +
@@ -142,14 +123,14 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
             differenceOffsetLeft +
             "px",
         }
-        const { children, ...currentProps } = baseProps
+
         dispatch(
           dslActions.dslActionHandler({
             type: "UpdateItem",
             dslFrame: {
               ...currentProps,
               props: {
-                ...currentProps.props,
+                ...props,
                 ...offset,
               },
             },
@@ -215,6 +196,10 @@ export const DraggableComponent: FC<DraggableComponentProps> = (baseProps) => {
             isDragging: true,
             dragGroupActualParent: parentId || "",
             draggingGroupCenter: { id: id },
+            startPoints: {
+              top: topRow,
+              left: leftColumn,
+            }
           })
         }}
       >
