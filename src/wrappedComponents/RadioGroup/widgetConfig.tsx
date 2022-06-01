@@ -3,7 +3,7 @@ import { ComponentModel } from "@/wrappedComponents/interface"
 import { v4 } from "uuid"
 
 export const RADIO_GROUP_WIDGET_CONFIG: ComponentModel = {
-  type: "RADIO_GROUP_WIDGET",
+  widgetType: "RADIO_GROUP_WIDGET",
   widgetName: "radioGroup",
   version: "0.0.1",
   icon: <SearchIcon />,

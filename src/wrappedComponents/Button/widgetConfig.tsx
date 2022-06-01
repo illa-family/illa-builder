@@ -3,7 +3,7 @@ import { globalColor, illaPrefix } from "@illa-design/theme"
 import { ComponentModel } from "@/wrappedComponents/interface"
 
 export const BUTTON_WIDGET_CONFIG: ComponentModel = {
-  type: "BUTTON_WIDGET",
+  widgetType: "BUTTON_WIDGET",
   widgetName: "button",
   version: "0.0.1",
   icon: <SearchIcon />,

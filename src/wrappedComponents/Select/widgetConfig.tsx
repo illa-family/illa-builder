@@ -3,7 +3,7 @@ import { ComponentModel } from "@/wrappedComponents/interface"
 import { v4 } from "uuid"
 
 export const SELECT_WIDGET_CONFIG: ComponentModel = {
-  type: "SELECT_WIDGET",
+  widgetType: "SELECT_WIDGET",
   widgetName: "select",
   version: "0.0.1",
   icon: <SearchIcon />,

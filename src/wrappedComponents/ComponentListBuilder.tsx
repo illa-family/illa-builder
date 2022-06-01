@@ -23,13 +23,13 @@ const translateChildren = (componentConfigs: ComponentModel[]) => {
     COMMON: [],
   }
   componentConfigs.forEach((item) => {
-    const { sessionType = "BASIC", type, widgetName } = item
+    const { sessionType = "BASIC", widgetType, widgetName } = item
     if (!sessionConfigs[sessionType]) {
       sessionConfigs[sessionType] = []
     }
     const childrenConfig = {
       ...item,
-      id: `${sessionType}-${type}-${widgetName}`,
+      id: `${sessionType}-${widgetType}-${widgetName}`,
     }
     sessionConfigs[sessionType].push(childrenConfig)
   })

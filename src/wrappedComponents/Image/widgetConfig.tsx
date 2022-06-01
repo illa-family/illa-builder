@@ -2,7 +2,7 @@ import { SearchIcon } from "@illa-design/icon"
 import { ComponentModel } from "@/wrappedComponents/interface"
 
 export const IMAGE_WIDGET_CONFIG: ComponentModel = {
-  type: "IMAGE_WIDGET",
+  widgetType: "IMAGE_WIDGET",
   widgetName: "image",
   version: "0.0.1",
   icon: <SearchIcon />,

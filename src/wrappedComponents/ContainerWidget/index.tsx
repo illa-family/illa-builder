@@ -27,7 +27,7 @@ interface PanelDrag {
 }
 
 export const CONTAINER_WIDGET_CONFIG: ComponentModel = {
-  type: "CONTAINER_WIDGET",
+  widgetType: "CONTAINER_WIDGET",
   widgetName: "Container",
   version: "0.0.1",
   icon: <SearchIcon />,

@@ -21,7 +21,7 @@ export type ComponentModel = {
   id?: string
   widgetName: string
   icon?: string | ReactNode // url
-  type?: string // 组件类型
+  widgetType?: string // 组件类型
   version: string
   sessionType?: SessionType
   defaults?: {

@@ -5,7 +5,7 @@ import { SearchIcon } from "@illa-design/icon"
 import { ComponentModel } from "@/wrappedComponents/interface"
 
 export const CANVAS_WIDGET_CONFIG: ComponentModel = {
-  type: "CANVAS_WIDGET",
+  widgetType: "CANVAS_WIDGET",
   widgetName: "Canvas",
   version: "0.0.1",
   icon: <SearchIcon />,
