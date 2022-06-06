@@ -1,12 +1,5 @@
-import { FC, useContext, useEffect, useRef, useState } from "react"
+import { FC, useRef } from "react"
 import { DynamicSwitchProps } from "./interface"
-import {
-  dynamicSelectHeaderStyle,
-  dynamicSelectStyle,
-  useTypeTextStyle,
-} from "@/page/Editor/components/PanelSetters/SelectSetter/style"
-import { Input } from "@illa-design/input"
-import { Select } from "@illa-design/select"
 import { initData } from "@/wrappedComponents/Chart/utils"
 import {
   defaultChartData,
@@ -26,8 +19,6 @@ export const ChartDataSetter: FC<DynamicSwitchProps> = (props) => {
     handleUpdatePanelConfig,
     panelConfig,
     defaultValue,
-    labelName,
-    useCustomLabel,
   } = props
 
   // todo@aoao  mock DataSource
@@ -67,6 +58,7 @@ export const ChartDataSetter: FC<DynamicSwitchProps> = (props) => {
             [attrName]: value[attrName],
             ["data"]: dataRes,
             ["datasets"]: res.datasets,
+            ["xAxisValues"]: res.xAxis ? res.xAxis[0] : "",
           })
           handleUpdatePanelConfig({
             ["chart-dateMap"]: res.dataMap,

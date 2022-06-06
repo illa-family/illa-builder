@@ -14,7 +14,6 @@ import {
 } from "./style"
 import { EyeOffIcon, EyeOnIcon, MoreIcon } from "@illa-design/icon"
 import useBus, { dispatch } from "use-bus"
-import { ActionMenu } from "@/page/Editor/components/PanelSetters/OptionListSetter/ActionMenu"
 import { ModalV2 } from "@/page/Editor/components/PanelSetters/DatasetsSetter/modalV2"
 
 export const ListItem: FC<ListItemProps> = (props) => {
@@ -29,8 +28,6 @@ export const ListItem: FC<ListItemProps> = (props) => {
     color = "",
     aggregationMethod,
     hidden,
-    handleCopyItem,
-    handleDeleteItem,
   } = props
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -96,14 +93,6 @@ export const ListItem: FC<ListItemProps> = (props) => {
     setModalVisible(true)
   }, [])
 
-  const handleOpenActionMenu = useCallback(() => {
-    setActionMenuVisible(true)
-  }, [])
-
-  const handleCloseActionMenu = useCallback(() => {
-    setActionMenuVisible(false)
-  }, [])
-
   useBus(`CLOSE_LIST_ALL_MODAL`, handleCloseModal, [handleCloseModal])
   useBus(`OPEN_LIST_ITEM_MODAL_${index}`, handleOpenModal, [
     handleOpenModal,
@@ -151,7 +140,7 @@ export const ListItem: FC<ListItemProps> = (props) => {
             ref={triggerRef}
             onClick={handleClickItemBody}
           >
-            <div css={labelNameAndIconCss}>
+            <div>
               <span css={applyColorIndentStyle(color)} />
               <span css={labelNameWrapper}>{label || value || "No label"}</span>
               <span css={aggregationMethodStyle}>{aggregationMethod}</span>

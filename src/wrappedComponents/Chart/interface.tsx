@@ -149,7 +149,7 @@ export const COLOR_SCHEME = [
   "#7965f1",
 ]
 
-const defaultChartJsonObj = {
+export const defaultChartJsonObj = {
   type: "bar",
   data: {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],

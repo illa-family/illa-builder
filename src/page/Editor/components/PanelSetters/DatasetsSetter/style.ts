@@ -62,7 +62,10 @@ export const labelNameAndIconCss = css`
     color: ${globalColor(`--${illaPrefix}-grayBlue-06`)};
   }
   div {
+    margin-left: 16px;
+    height: 100%;
     display: flex;
+    align-items: center;
     border-radius: 8px;
     flex-grow: 1;
     padding-left: 12px;

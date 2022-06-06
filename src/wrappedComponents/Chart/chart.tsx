@@ -57,8 +57,6 @@ export const WrappedChart: FC<WrappedChartProps> = (props) => {
   } = props
 
   const dataMap = useRef<{ [key: string]: any }>()
-  const [state, setState] = useState(Date.now())
-
   console.log("WrappedChart", props)
   useEffect(() => {
     const res = initData(data)
@@ -97,7 +95,6 @@ export const WrappedChart: FC<WrappedChartProps> = (props) => {
     } else {
       res = wrapData(data, xAxisValues, datasets, type)
     }
-    setState(Date.now())
     return [{ datasets: res?.datasets ?? [] }, res?.tooltips]
   }, [data, xAxisValues, datasets, type, dataMap.current, groupBy])
 
@@ -123,7 +120,7 @@ export const WrappedChart: FC<WrappedChartProps> = (props) => {
     return () => {
       myChart?.destroy()
     }
-  }, [])
+  }, [chartJson, configType])
 
   return (
     <Wrapper w={"500px"}>

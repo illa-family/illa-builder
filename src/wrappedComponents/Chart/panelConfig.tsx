@@ -1,8 +1,6 @@
 import { PanelConfig } from "@/page/Editor/components/InspectPanel/interface"
 import {
   CHART_TYPE,
-  defaultChartData,
-  defaultChartData02,
   LEGEND_POSITION,
   XAXISTYPE,
 } from "@/wrappedComponents/Chart/interface"
@@ -16,21 +14,21 @@ export const CHART_DATASET_CONFIG: PanelConfig[] = [
     isInPop: true,
   },
   {
-    id: "chart-title",
+    id: "dataset-value",
     labelName: "Dataset values",
-    attrName: "Dataset name",
+    attrName: "values",
     setterType: "INPUT_SETTER", /// TextArea
     isInPop: true,
   },
   {
-    id: "chart-title",
+    id: "dataset-aggregationMethod",
     labelName: "Aggregation method",
     attrName: "aggregationMethod",
     setterType: "SELECT_SETTER",
     isInPop: true,
   },
   {
-    id: "chart-title",
+    id: "dataset-type",
     labelName: "Type",
     attrName: "type",
     setterType: "SELECT_SETTER",
@@ -38,9 +36,9 @@ export const CHART_DATASET_CONFIG: PanelConfig[] = [
     isInPop: true,
   },
   {
-    id: "chart-title",
+    id: "dataset-toolTip",
     labelName: "Tooltip",
-    attrName: "aggregationMethod",
+    attrName: "toolTip",
     setterType: "INPUT_SETTER",
     isInPop: true,
   },
@@ -89,78 +87,6 @@ export const CHART_PANEL_CONFIG: PanelConfig[] = [
           return value["configType"] === "UIForm"
         },
       },
-      // {
-      //   id: "chart-type",
-      //   labelName: "Chart type",
-      //   isFullWidth: true,
-      //   attrName: "type",
-      //   setterType: "SELECT_SETTER",
-      //   options: [
-      //     {
-      //       label: "Line chart",
-      //       value: "Line",
-      //     },
-      //     {
-      //       label: "Bar chart",
-      //       value: "Bar",
-      //     },
-      //     {
-      //       label: "Pie chart",
-      //       value: "Pie",
-      //     },
-      //     {
-      //       label: "ScatterPlot",
-      //       value: "ScatterPlot",
-      //     },
-      //   ],
-      //   bindAttrName: "configType",
-      //   shown: (value) => value === "UIForm",
-      // },
-      // {
-      //   id: "chart-xAxisValues",
-      //   labelName: "X-axis values",
-      //   useCustomLabel: true,
-      //   attrName: "xAxisValues",
-      //   setterType: "DYNAMIC_SELECT_SETTER",
-      //   bindAttrName: ["configType", "type"],
-      //   shown: (value) => {
-      //     return value["configType"] === "UIForm" && value["type"] !== "Pie"
-      //   },
-      // },
-      // {
-      //   id: "chart-groupBy",
-      //   labelName: "Group by",
-      //   useCustomLabel: true,
-      //   isFullWidth: true,
-      //   attrName: "groupBy",
-      //   setterType: "DYNAMIC_SELECT_SETTER",
-      //   bindAttrName: ["configType", "type"],
-      //   shown: (value) => {
-      //     return value["configType"] === "UIForm" && value["type"] !== "Pie"
-      //   },
-      // },
-      // {
-      //   id: "chart-value-labels",
-      //   labelName: "Value labels",
-      //   useCustomLabel: true,
-      //   isFullWidth: true,
-      //   attrName: "groupBy",
-      //   setterType: "DYNAMIC_SELECT_SETTER",
-      //   bindAttrName: ["configType", "type"],
-      //   shown: (value) => {
-      //     return value["configType"] === "UIForm" && value["type"] === "Pie"
-      //   },
-      // },
-      // {
-      //   id: "chart-datasets",
-      //   labelName: "datasets",
-      //   isFullWidth: true,
-      //   attrName: "type",
-      //   setterType: "CHART_DATASETS_LIST_SETTER", // todo @aoao
-      //   options: ["value1", "value2", "value3"],
-      //   bindAttrName: "configType",
-      //   shown: (value) => value === "UIForm",
-      // },
       {
         id: "chart-data",
         labelName: "data",
@@ -178,22 +104,7 @@ export const CHART_PANEL_CONFIG: PanelConfig[] = [
     id: "chart-interaction",
     groupName: "INTERACTION",
     children: [
-      {
-        id: "chart-interaction-disabled",
-        labelName: "Disabled",
-        attrName: "disabled",
-        setterType: "INPUT_SETTER",
-        placeholder: "false",
-        defaultValue: false,
-      },
-      {
-        id: "chart-interaction-readonly",
-        labelName: "Readonly",
-        attrName: "readOnly",
-        setterType: "INPUT_SETTER",
-        placeholder: "false",
-        defaultValue: false,
-      },
+      // eventHandle
     ],
   },
   {
