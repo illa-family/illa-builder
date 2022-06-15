@@ -1,28 +1,17 @@
 import { css, SerializedStyles } from "@emotion/react"
 import { globalColor, illaPrefix } from "@illa-design/theme"
 
-/**
- * @param h default 100% , or number for px
- */
-export function applyScaleStyle(h: number | null): SerializedStyles {
-  let finalHeight: string
-  if (h == null) {
-    finalHeight = "100%"
-  } else {
-    finalHeight = `${h}px`
-  }
-  return css`
-    position: relative;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-top: 6px;
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 948px;
-    min-height: 948px;
-    height: ${finalHeight};
-  `
-}
+export const dotPanelStyle = css`
+  position: relative;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 6px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 948px;
+  height: 100%;
+  overflow: auto;
+`
 
 export const dotStyle = css`
   height: 2px;

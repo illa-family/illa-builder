@@ -9,7 +9,7 @@ import {
   applyDotContainerStyle,
   applyDotRowsStyle,
   applyDragObjectStyle,
-  applyScaleStyle,
+  dotPanelStyle,
   dotStyle,
 } from "@/page/App/components/DotPanel/style"
 import useWindowSize from "react-use/lib/useWindowSize"
@@ -104,7 +104,7 @@ export const DotPanel: FC<DotPanelProps> = (props) => {
         (container.getBoundingClientRect().width -
           edgeWidth * 2 -
           (blockColumns + 1) * 2) /
-          blockColumns +
+        blockColumns +
         2
       dispatch(configActions.updateUnitWidth(finalBlockWidth))
       setCanvasWidth(container.getBoundingClientRect().width - edgeWidth * 2)
@@ -167,14 +167,14 @@ export const DotPanel: FC<DotPanelProps> = (props) => {
 
         const defaultProps = item.props
           ? {
-              widgetType: item.type || "",
-              widgetDisplayName: item.displayName,
-              ...item.props,
-            }
+            widgetType: item.type || "",
+            widgetDisplayName: item.displayName,
+            ...item.props,
+          }
           : {
-              widgetType: item.type || "",
-              widgetDisplayName: item.displayName,
-            }
+            widgetType: item.type || "",
+            widgetDisplayName: item.displayName,
+          }
         dispatch(
           inspectActions.addOrUpdateWidgetPanelConfig({
             displayName: item.displayName,
@@ -344,7 +344,7 @@ export const DotPanel: FC<DotPanelProps> = (props) => {
   return (
     <div
       ref={mergeRefs(canvasRef, dropTarget)}
-      css={applyScaleStyle(canvasHeight)}
+      css={dotPanelStyle}
       {...otherProps}
     >
       <div css={applyDotContainerStyle(showDot, canvasWidth, canvasHeight)}>
