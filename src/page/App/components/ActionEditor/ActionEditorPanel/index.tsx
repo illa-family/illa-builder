@@ -6,7 +6,7 @@ import { Dropdown } from "@illa-design/dropdown"
 import { Menu } from "@illa-design/menu"
 import { useTranslation } from "react-i18next"
 import { useSelector } from "react-redux"
-import { selectAllActionItem } from "@/redux/currentApp/action/actionSelector"
+import { getSelectedAction } from "@/redux/currentApp/config/configSelector"
 import { ActionEditorContext } from "@/page/App/components/ActionEditor/context"
 import { ResourceEditor } from "@/page/App/components/ActionEditor/ActionEditorPanel/ResourceEditor"
 import { TransformerEditor } from "@/page/App/components/ActionEditor/ActionEditorPanel/TransformerEditor"
@@ -86,15 +86,7 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
 
   const runningIntervalRef = useRef<NodeJS.Timer>()
   const triggerRunRef = useRef<triggerRunRef>(null)
-  const actionItems = useSelector(selectAllActionItem)
-  const activeActionItem = useMemo(() => {
-    if (!activeActionItemId) {
-      return null
-    }
-
-    return actionItems.find((action) => action.actionId === activeActionItemId)
-  }, [actionItems, activeActionItemId])
-
+  const activeActionItem = useSelector(getSelectedAction)
   const actionType = activeActionItem?.actionType ?? ""
 
   function handleAction(key: string) {
@@ -195,9 +187,9 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
         >
           {isRuning
             ? duration
-            : (isActionDirty ?
-              t("editor.action.panel.btn.save_and_run") :
-              t("editor.action.panel.btn.run"))}
+            : isActionDirty
+            ? t("editor.action.panel.btn.save_and_run")
+            : t("editor.action.panel.btn.run")}
         </Button>
       </header>
 

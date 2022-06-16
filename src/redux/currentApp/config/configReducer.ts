@@ -49,6 +49,13 @@ export const updateSelectedComponent: CaseReducer<
   state.selectedComponents = action.payload
 }
 
+export const updateSelectedActionId: CaseReducer<
+  ConfigState,
+  PayloadAction<string>
+> = (state, action) => {
+  state.selectedActionId = action.payload
+}
+
 export const updateShowDot: CaseReducer<ConfigState, PayloadAction<boolean>> = (
   state,
   action,

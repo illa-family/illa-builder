@@ -6,7 +6,7 @@ import { Input } from "@illa-design/input"
 import { FieldArray } from "@/page/App/components/ActionEditor/ActionEditorPanel/ResourceEditor/FieldArray"
 import { ActionEditorContext } from "@/page/App/components/ActionEditor/context"
 import { useSelector } from "react-redux"
-import { selectAllActionItem } from "@/redux/currentApp/action/actionSelector"
+import { getSelectedAction } from "@/redux/currentApp/config/configSelector"
 import { selectAllResource } from "@/redux/currentApp/resource/resourceSelector"
 import {
   configContainerStyle,
@@ -37,11 +37,8 @@ function concatUrl(
 export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
   const { onChange } = props
   const { t } = useTranslation()
-  const { activeActionItemId, resourceId } = useContext(ActionEditorContext)
-  const action =
-    useSelector(selectAllActionItem).find(
-      ({ actionId: id }) => id === activeActionItemId,
-    ) ?? null
+  const { resourceId } = useContext(ActionEditorContext)
+  const action = useSelector(getSelectedAction)
   const resource =
     useSelector(selectAllResource).find(
       ({ resourceId: id }) => id === resourceId,

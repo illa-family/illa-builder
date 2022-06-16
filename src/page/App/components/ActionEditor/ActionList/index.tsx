@@ -136,10 +136,7 @@ export const ActionList: FC<ActionListProps> = (props) => {
           css={actionItemNameStyle}
           onDoubleClick={() => editName(id, name)}
         >
-          <span
-            css={applyactionItemNameTextStyle(error ?? false)}
-            title={name}
-          >
+          <span css={applyactionItemNameTextStyle(error ?? false)} title={name}>
             {name}
           </span>
           {isActionDirty && isSelected && (
