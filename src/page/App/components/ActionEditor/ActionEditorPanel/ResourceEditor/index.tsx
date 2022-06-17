@@ -26,6 +26,8 @@ import { ResourceEditorProps } from "./interface"
 export const ResourceEditor = forwardRef<triggerRunRef, ResourceEditorProps>(
   (props, ref) => {
     const {
+      triggerMode,
+      onChangeTriggerMode,
       onChangeResource,
       onCreateResource,
       onEditResource,
@@ -37,19 +39,18 @@ export const ResourceEditor = forwardRef<triggerRunRef, ResourceEditorProps>(
     const { t } = useTranslation()
     const resourceList = useSelector(selectAllResource)
     const { resourceId } = useSelector(getSelectedAction)
+    const isResourceEditable = resourceId !== ""
 
     const triggerOptions = [
       {
         label: t("editor.action.panel.option.trigger.manually"),
-        value: 0,
+        value: "manual",
       },
       {
         label: t("editor.action.panel.option.trigger.on_change"),
-        value: 1,
+        value: "onChange",
       },
     ]
-
-    const isResourceEditable = resourceId !== ""
 
     return (
       <div css={panelScrollStyle}>
@@ -59,6 +60,8 @@ export const ResourceEditor = forwardRef<triggerRunRef, ResourceEditorProps>(
           </label>
           <span css={fillingStyle} />
           <Select
+            value={triggerMode}
+            onChange={onChangeTriggerMode}
             options={triggerOptions}
             defaultValue={0}
             css={css(actionSelectStyle, triggerSelectStyle)}

@@ -21,3 +21,5 @@ export type triggerRunRef = {
   run: () => void
   saveAndRun: () => void
 }
+
+export type TriggerMode = "manual" | "onChange"

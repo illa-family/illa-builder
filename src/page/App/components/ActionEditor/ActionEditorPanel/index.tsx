@@ -9,7 +9,7 @@ import { getSelectedAction } from "@/redux/currentApp/config/configSelector"
 import { ResourceEditor } from "@/page/App/components/ActionEditor/ActionEditorPanel/ResourceEditor"
 import { TransformerEditor } from "@/page/App/components/ActionEditor/ActionEditorPanel/TransformerEditor"
 import { TitleInput } from "@/page/App/components/ActionEditor/ActionEditorPanel/TitleInput"
-import { ActionEditorPanelProps, triggerRunRef } from "./interface"
+import { ActionEditorPanelProps, triggerRunRef, TriggerMode } from "./interface"
 import {
   containerStyle,
   headerStyle,
@@ -21,42 +21,6 @@ import {
 } from "./style"
 import { ActionEditorPanelContext } from "./context"
 import { ActionResult } from "./ActionResult"
-
-function renderEditor(
-  actionType: string,
-  ref: Ref<triggerRunRef>,
-  onSaveParam: () => void,
-  onRun: (result: any) => void,
-  props: Partial<ActionEditorPanelProps>,
-) {
-  const { onEditResource, onChangeResource, onCreateResource, onChange } = props
-
-  switch (actionType) {
-    case "restapi":
-    case "mysql":
-      return (
-        <ResourceEditor
-          ref={ref}
-          onChangeParam={onChange}
-          onSaveParam={onSaveParam}
-          onRun={onRun}
-          onCreateResource={onCreateResource}
-          onEditResource={onEditResource}
-          onChangeResource={onChangeResource}
-        />
-      )
-    case "transformer":
-      return (
-        <TransformerEditor
-          ref={ref}
-          onChangeParam={onChange}
-          onSaveParam={onSaveParam}
-        />
-      )
-    default:
-      return null
-  }
-}
 
 export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
   const {
@@ -74,6 +38,7 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
 
   const [moreBtnMenuVisible, setMoreBtnMenuVisible] = useState(false)
   const [actionResVisible, setActionResVisible] = useState(false)
+  const [triggerMode, setTriggerMode] = useState<TriggerMode>("manual")
   const [isRuning, setIsRuning] = useState(false)
   const [result, setResult] = useState<object>()
   const [duration, setDuaraion] = useState<string>()
@@ -82,6 +47,7 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
   const triggerRunRef = useRef<triggerRunRef>(null)
   const activeActionItem = useSelector(getSelectedAction)
   const actionType = activeActionItem?.actionType ?? ""
+  let editorNode = null
 
   const moreActions = (
     <div css={moreBtnMenuStyle}>
@@ -129,6 +95,36 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
       clearInterval(runningIntervalRef.current)
       setDuaraion("")
     }
+  }
+
+  switch (actionType) {
+    case "restapi":
+    case "mysql":
+      editorNode = (
+        <ResourceEditor
+          ref={triggerRunRef}
+          triggerMode={triggerMode}
+          onChangeTriggerMode={setTriggerMode}
+          onChangeParam={onChange}
+          onSaveParam={onSaveParam}
+          onRun={onRun}
+          onCreateResource={onCreateResource}
+          onEditResource={onEditResource}
+          onChangeResource={onChangeResource}
+        />
+      )
+      break
+    case "transformer":
+      editorNode = (
+        <TransformerEditor
+          ref={triggerRunRef}
+          onChangeParam={onChange}
+          onSaveParam={onSaveParam}
+        />
+      )
+      break
+    default:
+      break
   }
 
   return (
@@ -184,12 +180,7 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
       {activeActionItem && (
         <>
           <ActionEditorPanelContext.Provider value={{ onLoadingActionResult }}>
-            {renderEditor(actionType, triggerRunRef, onSaveParam, onRun, {
-              onChange,
-              onCreateResource,
-              onEditResource,
-              onChangeResource,
-            })}
+            {editorNode}
           </ActionEditorPanelContext.Provider>
           <AnimatePresence>
             {actionResVisible && (

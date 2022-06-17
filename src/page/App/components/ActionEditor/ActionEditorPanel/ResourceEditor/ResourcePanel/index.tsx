@@ -20,7 +20,6 @@ export const ResourcePanel = forwardRef<triggerRunRef, ResourcePanelProps>(
 
     const { onLoadingActionResult } = useContext(ActionEditorPanelContext)
     const activeActionItem = useSelector(getSelectedAction)
-    const allResource = useSelector(selectAllResource)
     const dispatch = useDispatch()
 
     let resourceType: string
@@ -34,6 +33,7 @@ export const ResourcePanel = forwardRef<triggerRunRef, ResourcePanelProps>(
     resource = useSelector(selectAllResource).find(
       (i) => i.resourceId === resourceId,
     )
+    resourceType = resource?.resourceType ?? ""
 
     const onParamsChange = (value: ParamValues) => {
       setParams({ ...params, ...value })
@@ -117,9 +117,6 @@ export const ResourcePanel = forwardRef<triggerRunRef, ResourcePanelProps>(
     useImperativeHandle(ref, () => {
       return { run, saveAndRun }
     })
-
-    resource = allResource.find((i) => i.resourceId === resourceId)
-    resourceType = resource?.resourceType ?? ""
 
     return (
       <>
