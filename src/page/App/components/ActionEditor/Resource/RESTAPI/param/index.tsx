@@ -14,13 +14,14 @@ import {
   labelTextStyle,
   applyGridColIndex,
 } from "@/page/App/components/ActionEditor/Resource/style"
-import { Body } from "./Body"
-import { actionTypeStyle } from "./style"
 import {
   RESTAPIParamProps,
   RESTAPIConfigureValues,
   RESTAPIParamValues,
-} from "../interface"
+} from "@/page/App/components/ActionEditor/Resource/RESTAPI/interface"
+import { Body } from "./Body"
+import { actionTypeStyle } from "./style"
+
 
 export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
   const { onChange } = props
@@ -48,11 +49,11 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
 
   function updateField(field: string) {
     return (v: any) => {
-      setParams((preParam) => {
-        const newParam = { ...preParam, [field]: v }
+      setParams((preParams) => {
+        const newParams = { ...preParams, [field]: v }
 
-        onChange && onChange(newParam)
-        return newParam
+        onChange?.(newParams)
+        return newParams
       })
     }
   }
