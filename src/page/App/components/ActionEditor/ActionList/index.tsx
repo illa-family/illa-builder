@@ -96,21 +96,15 @@ export const ActionList: FC<ActionListProps> = (props) => {
   }
 
   function onAddAction(info: ActionInfo) {
-    const { category, actionType, resourceId = "" } = info
+    const { actionType, resourceId = "" } = info
 
     setActionGeneratorVisible(false)
-
-    let actionTemplate
-
-    if (category === "jsTransformer") {
-      actionTemplate = { transformer: "" }
-    }
 
     onAddActionItem({
       displayName: ActionDisplayNameGenerator.getDisplayName(actionType),
       actionType,
       resourceId,
-      actionTemplate,
+      actionTemplate: {},
     })
   }
 

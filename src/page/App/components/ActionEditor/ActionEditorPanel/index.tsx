@@ -38,7 +38,7 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { setIsActionDirty } = useContext(ActionEditorContext)
+  const { setIsActionDirty, baseActionApi } = useContext(ActionEditorContext)
   const [moreBtnMenuVisible, setMoreBtnMenuVisible] = useState(false)
   const [actionResVisible, setActionResVisible] = useState(false)
   const [triggerMode, setTriggerMode] = useState<TriggerMode>("manual")
@@ -97,7 +97,7 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
 
     Api.request<ActionItem>(
       {
-        url: `/actions/${actionId}`,
+        url: `${baseActionApi}/${actionId}`,
         method: "PUT",
         data: actionPayload,
       },
@@ -131,10 +131,10 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
 
     Api.request(
       {
-        url: `/actions/${activeActionItem?.actionId}/run`,
+        url: `${baseActionApi}/${activeActionItem?.actionId}/run`,
         method: "POST",
         data: {
-          actionType: activeActionItem?.actionType,
+          ...activeActionItem,
         },
       },
       (response) => {

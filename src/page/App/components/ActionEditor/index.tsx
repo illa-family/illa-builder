@@ -212,6 +212,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
         editorHeight,
         setActionListLoading,
         setIsActionDirty,
+        baseActionApi,
       }}
     >
       <div className={className}>
@@ -240,7 +241,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
                 setActionType("select")
                 setFormVisible(true)
               }}
-              onEditResource={(id: string) => {
+              onEditResource={() => {
                 setActionType("edit")
                 setFormVisible(true)
               }}
