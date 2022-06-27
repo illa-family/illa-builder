@@ -1,15 +1,35 @@
+import { FC, useState } from "react"
+import { useSelector } from "react-redux"
 import { CodeEditor } from "@/components/CodeEditor"
-import { MySQLParamProps } from "../interface"
+import { MySQLParamProps, MySQLParamValues } from "@/page/App/components/ActionEditor/Resource/MySQL/interface"
+import { getSelectedAction } from "@/redux/config/configSelector"
 import { panelPaddingStyle } from "./style"
 
-export const MySQLParam = (props: MySQLParamProps) => {
+export const MySQLParam: FC<MySQLParamProps> = (props) => {
   const { onChange } = props
+  const { query = "" } = useSelector(getSelectedAction)?.actionTemplate ?? {}
+  const [params, setParams] = useState<MySQLParamValues>({
+    query,
+    mode: "sql",
+  })
+
+  function updateField(field: string) {
+    return (v: any) => {
+      setParams((preParams) => {
+        const newParams = { ...preParams, [field]: v }
+
+        onChange?.(newParams)
+
+        return newParams
+      })
+    }
+  }
+
   return (
     <div css={panelPaddingStyle}>
       <CodeEditor
-        onChange={(value) => {
-          onChange && onChange({ query: value })
-        }}
+        value={params.query}
+        onChange={updateField("query")}
         mode="TEXT_SQL"
         expectedType="String"
         height="88px"
