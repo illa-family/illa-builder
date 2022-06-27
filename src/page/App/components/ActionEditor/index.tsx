@@ -1,9 +1,11 @@
 import { FC, useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useTranslation } from "react-i18next"
+import { useParams } from "react-router-dom"
 import { Api } from "@/api/base"
 import { ActionDisplayNameGenerator } from "@/utils/generators/generateActionDisplayName"
 import { selectAllActionItem } from "@/redux/currentApp/action/actionSelector"
+import { getDashboardApps } from "@/redux/dashboard/apps/dashboardAppSelector"
 import { actionActions } from "@/redux/currentApp/action/actionSlice"
 import { configActions } from "@/redux/config/configSlice"
 import { ActionItem } from "@/redux/currentApp/action/actionState"
@@ -21,6 +23,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   const { className } = props
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const params = useParams()
   const [formVisible, setFormVisible] = useState(false)
   const [actionType, setActionType] = useState<ActionType>("select")
   const [resourceId, setResourceId] = useState("")
@@ -29,6 +32,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   const [actionListLoading, setActionListLoading] = useState(false)
   const [activeActionItemId, setActiveActionItemId] = useState<string>("")
   const actionItems = useSelector(selectAllActionItem)
+  const baseActionApi = `/versions/${params.currentVersionId}/actions`
 
   function updateSeletedItemId(id: string) {
     const { length } = actionItems
@@ -61,7 +65,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   function onAddActionItem(data: Partial<ActionItem>) {
     Api.request(
       {
-        url: "/actions",
+        url: baseActionApi,
         method: "POST",
         data,
       },
@@ -69,8 +73,8 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
         dispatch(actionActions.addActionItemReducer(data))
         updateActiveActionItemId(data.actionId)
       },
-      () => {},
-      () => {},
+      () => { },
+      () => { },
       (loading) => {
         setActionListLoading(loading)
       },
@@ -80,7 +84,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   function onUpdateActionItem(actionId: string, data: Partial<ActionItem>) {
     Api.request(
       {
-        url: `/actions/${actionId}`,
+        url: `${baseActionApi}/${actionId}`,
         method: "PUT",
         data: data,
       },
@@ -91,8 +95,8 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
           }),
         )
       },
-      () => {},
-      () => {},
+      () => { },
+      () => { },
       (loading) => {
         setActionListLoading(loading)
       },
@@ -108,7 +112,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
 
       Api.request(
         {
-          url: "/actions",
+          url: baseActionApi,
           method: "POST",
           data: {
             ...duplicateActionData,
@@ -119,8 +123,8 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
           dispatch(actionActions.addActionItemReducer(data))
           onDuplicateActionItem(data?.actionId)
         },
-        () => {},
-        () => {},
+        () => { },
+        () => { },
         (loading) => {
           setActionListLoading(loading)
         },
@@ -131,15 +135,15 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   function onDeleteActionItem(actionId: string = activeActionItemId) {
     Api.request(
       {
-        url: `/actions/${actionId}`,
+        url: `${baseAcitonApi}/${actionId}`,
         method: "DELETE",
       },
       ({ data }: { data: { actionId: string } }) => {
         dispatch(actionActions.removeActionItemReducer(data?.actionId))
         updateSeletedItemId(data?.actionId)
       },
-      () => {},
-      () => {},
+      () => { },
+      () => { },
       (loading) => {
         setActionListLoading(loading)
       },
@@ -161,7 +165,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
       () => {
         // TODO: handle error
       },
-      () => {},
+      () => { },
       () => {
         // TODO: handle loading
       },
@@ -170,7 +174,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
     Api.request(
       {
         method: "GET",
-        url: "/actions",
+        url: baseActionApi,
         signal: controller.signal,
       },
       ({ data }: { data: ActionItem[] }) => {
@@ -183,7 +187,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
       () => {
         // TODO: handle error
       },
-      () => {},
+      () => { },
       (loading) => {
         setActionListLoading(loading)
       },
