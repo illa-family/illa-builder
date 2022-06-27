@@ -31,7 +31,6 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
   const {
     isActionDirty,
     onEditResource,
-    onChangeResource,
     onCreateResource,
     onDuplicateActionItem,
     onDeleteActionItem,
@@ -199,7 +198,6 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
           onChangeTriggerMode={setTriggerMode}
           onCreateResource={onCreateResource}
           onEditResource={onEditResource}
-          onChangeResource={onChangeResource}
         />
       )
       break

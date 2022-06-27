@@ -3,7 +3,6 @@ import { TriggerMode } from "@/page/App/components/ActionEditor/ActionEditorPane
 export interface ResourceEditorProps {
   triggerMode?: TriggerMode
   onChangeTriggerMode?: (mode: TriggerMode) => void
-  onChangeResource?: (resourceId: string) => void
   onCreateResource?: () => void
   onEditResource?: (resourceId: string) => void
   onChangeParam?: () => void

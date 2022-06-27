@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom"
 import { Api } from "@/api/base"
 import { ActionDisplayNameGenerator } from "@/utils/generators/generateActionDisplayName"
 import { selectAllActionItem } from "@/redux/currentApp/action/actionSelector"
-import { getDashboardApps } from "@/redux/dashboard/apps/dashboardAppSelector"
+import { getSelectedAction } from "@/redux/config/configSelector"
 import { actionActions } from "@/redux/currentApp/action/actionSlice"
 import { configActions } from "@/redux/config/configSlice"
 import { ActionItem } from "@/redux/currentApp/action/actionState"
@@ -26,12 +26,12 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   const params = useParams()
   const [formVisible, setFormVisible] = useState(false)
   const [actionType, setActionType] = useState<ActionType>("select")
-  const [resourceId, setResourceId] = useState("")
   const [isActionDirty, setIsActionDirty] = useState(false)
   const [editorHeight, setEditorHeight] = useState(300)
   const [actionListLoading, setActionListLoading] = useState(false)
   const [activeActionItemId, setActiveActionItemId] = useState<string>("")
   const actionItems = useSelector(selectAllActionItem)
+  const { resourceId = "" } = useSelector(getSelectedAction)
   const baseActionApi = `/versions/${params.currentVersionId}/actions`
 
   function updateSeletedItemId(id: string) {
@@ -135,7 +135,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   function onDeleteActionItem(actionId: string = activeActionItemId) {
     Api.request(
       {
-        url: `${baseAcitonApi}/${actionId}`,
+        url: `${baseActionApi}/${actionId}`,
         method: "DELETE",
       },
       ({ data }: { data: { actionId: string } }) => {
@@ -241,11 +241,9 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
                 setFormVisible(true)
               }}
               onEditResource={(id: string) => {
-                setResourceId(id)
                 setActionType("edit")
                 setFormVisible(true)
               }}
-              onChangeResource={setResourceId}
               onChange={() => setIsActionDirty(true)}
               onSave={() => setIsActionDirty(false)}
             />
