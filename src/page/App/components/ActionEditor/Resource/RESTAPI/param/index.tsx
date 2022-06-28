@@ -3,6 +3,7 @@ import { css } from "@emotion/react"
 import { useTranslation } from "react-i18next"
 import { Select } from "@illa-design/select"
 import { Input } from "@illa-design/input"
+import { debounce } from "@illa-design/system"
 import { FieldArray } from "@/page/App/components/ActionEditor/ActionEditorPanel/ResourceEditor/FieldArray"
 import { useSelector } from "react-redux"
 import { getSelectedAction } from "@/redux/config/configSelector"
@@ -64,9 +65,13 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
 
   const hasBody = params.method.indexOf("GET") === -1
 
-  /* useEffect(() => {
-   *   onChange && onChange(params)
-   * }, [params]) */
+  const debounceOnChange = debounce(() => {
+    onChange?.(params)
+  }, 200)
+
+  useEffect(() => {
+    debounceOnChange()
+  }, [params])
 
   function updateUrlParams() {
     setParams((preParams) => {
