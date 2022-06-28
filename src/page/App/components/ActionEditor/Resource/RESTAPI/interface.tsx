@@ -54,7 +54,7 @@ export interface BodyProps {
 
 export interface RESTAPIParamValues {
   method?: HTTPMethod
-  path?: string
+  url?: string
   urlParams?: Params[]
   headers?: Params[]
   contentType?: ContentType

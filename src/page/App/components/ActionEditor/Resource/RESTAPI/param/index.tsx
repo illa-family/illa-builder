@@ -38,7 +38,7 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
 
   const [params, setParams] = useState({
     method: config?.method ?? "GET",
-    path: config?.path,
+    url: config?.url,
     urlParams: config?.urlParams ?? [],
     headers: config?.headers ?? [],
     body: config?.body ?? [],
@@ -72,8 +72,8 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
             size={"small"}
           />
           <Input
-            value={params.path}
-            onChange={updateField("path")}
+            value={params.url}
+            onChange={updateField("url")}
             placeholder={t(
               "editor.action.resource.rest_api.placeholder.action_url_path",
             )}
