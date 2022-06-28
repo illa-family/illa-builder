@@ -26,7 +26,7 @@ import {
   extractPath,
   hasParamInPath,
 } from "@/page/App/components/ActionEditor/Resource/RESTAPI/util"
-
+import { ValueType } from "@/page/App/components/ActionEditor/ActionEditorPanel/ResourceEditor/FieldArray/interface"
 import {
   initArrayField,
   addArrayField,
@@ -84,7 +84,7 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         return newParams
       }
 
-      let newUrlParams = []
+      let newUrlParams: ValueType[] = []
       const extractedParams = extractParamFromPath(newParams.path)
 
       extractedParams.forEach((param, index) => {
@@ -96,7 +96,9 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
       })
 
       if (newParams.urlParams.length > extractedParams.length) {
-        newUrlParams = newUrlParams.concat(newParams.urlParams[newParams.urlParams.length - 1])
+        newUrlParams = newUrlParams.concat(
+          newParams.urlParams[newParams.urlParams.length - 1],
+        )
       }
 
       newParams.urlParams = newUrlParams.length
