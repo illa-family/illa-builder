@@ -34,9 +34,6 @@ export const FieldArray: FC<FieldArrayProps> = (props) => {
 
     if (index === fields.length - 1) {
       onAdd?.()
-    } else {
-      const { key, value, _key } = fields[index]
-      key === "" && value === "" && onRemove?.(_key)
     }
   }
 

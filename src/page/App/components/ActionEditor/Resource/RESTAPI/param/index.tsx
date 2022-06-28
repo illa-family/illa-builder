@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { css } from "@emotion/react"
 import { useTranslation } from "react-i18next"
 import { Select } from "@illa-design/select"
@@ -20,16 +20,19 @@ import {
   RESTAPIParamValues,
 } from "@/page/App/components/ActionEditor/Resource/RESTAPI/interface"
 import {
-  concatParam2Path,
+  concatParam,
   extractParamFromPath,
+  extractPath,
   hasParamInPath,
 } from "@/page/App/components/ActionEditor/Resource/RESTAPI/util"
+
 import {
   initArrayField,
-  getEmptyField,
   addArrayField,
   removeArrayField,
   updateArrayField,
+  wrappedWithKey,
+  getEmptyField,
 } from "@/page/App/components/ActionEditor/ActionEditorPanel/ResourceEditor/FieldArray/util"
 import { Body } from "./Body"
 import { actionTypeStyle } from "./style"
@@ -61,42 +64,53 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
 
   const hasBody = params.method.indexOf("GET") === -1
 
-  function updateField(field: string, newFieldVal: any) {
-    const newParams = { ...params, [field]: newFieldVal }
+  /* useEffect(() => {
+   *   onChange && onChange(params)
+   * }, [params]) */
 
-    onChange && onChange(newParams)
-    field === "path" && isEditingUrl && updateUrlParams(newParams)
-    field === "urlParams" && !isEditingUrl && updatePath(newParams)
-
+  function updateUrlParams() {
     setParams((preParams) => {
-      return { ...preParams, [field]: newFieldVal }
+      const newParams = { ...preParams }
+
+      if (!hasParamInPath(preParams.path)) {
+        if (newParams.urlParams.length > 1) {
+          newParams.urlParams = [getEmptyField()]
+        }
+        return newParams
+      }
+
+      let newUrlParams = []
+      const extractedParams = extractParamFromPath(newParams.path)
+
+      extractedParams.forEach((param, index) => {
+        if (newParams.urlParams[index]) {
+          newUrlParams.push({ ...newParams.urlParams[index], ...param })
+        } else {
+          newUrlParams.push(wrappedWithKey(param))
+        }
+      })
+
+      if (newParams.urlParams.length > extractedParams.length) {
+        newUrlParams = newUrlParams.concat(newParams.urlParams[newParams.urlParams.length - 1])
+      }
+
+      newParams.urlParams = newUrlParams.length
+        ? newUrlParams
+        : [getEmptyField()]
+
+      return newParams
     })
   }
 
-  function updateUrlParams(params: RESTAPIParamValues) {
-    if (!hasParamInPath(params.path)) {
-      return
-    }
-
+  function updatePath() {
     setParams((preParams) => {
-      const newUrlParams = extractParamFromPath(params?.path).map(
-        (param, index) => {
-          // to merge original `_key` props
-          return { ...(preParams.urlParams[index] ?? {}), ...param }
-        },
-      )
+      const params = concatParam(preParams.urlParams)
+      const path = extractPath(preParams.path)
+
       return {
         ...preParams,
-        urlParams: newUrlParams.length ? newUrlParams : [getEmptyField()],
+        path: params ? `${path}?${params}` : path,
       }
-    })
-  }
-
-  function updatePath(params: RESTAPIParamValues) {
-    const [path] = params?.path?.split("?") ?? ["", ""]
-
-    setParams((preParams) => {
-      return { ...preParams, path: concatParam2Path(path, preParams.urlParams) }
     })
   }
 
@@ -109,7 +123,11 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         <div css={actionTypeStyle}>
           <Select
             value={params.method}
-            onChange={(value) => updateField("method", value)}
+            onChange={(value) => {
+              setParams((prev) => {
+                return { ...prev, method: value }
+              })
+            }}
             options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
             size={"small"}
           />
@@ -118,7 +136,10 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
             onFocus={() => setIsEditingUrl(true)}
             onBlur={() => setIsEditingUrl(false)}
             onChange={(value) => {
-              updateField("path", value)
+              setParams((prev) => {
+                return { ...prev, path: value }
+              })
+              isEditingUrl && updateUrlParams()
             }}
             placeholder={t(
               "editor.action.resource.rest_api.placeholder.action_url_path",
@@ -142,20 +163,25 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
               return { ...prev, urlParams: addArrayField(prev.urlParams) }
             })
           }}
-          onRemove={(_key) =>
+          onRemove={(_key) => {
             setParams((prev) => {
-              return { ...prev, urlParams: removeArrayField(prev.urlParams, _key) }
+              return {
+                ...prev,
+                urlParams: removeArrayField(prev.urlParams, _key),
+              }
             })
-          }
+          }}
           onChange={(value) => {
             setParams((prev) => {
-              const urlParams = updateArrayField(prev.urlParams, value)
+              const urlParams =
+                value.key === undefined && value.value === undefined
+                  ? removeArrayField(prev.urlParams, value._key)
+                  : updateArrayField(prev.urlParams, value)
               const newParams = { ...prev, urlParams }
-
-              !isEditingUrl && updatePath(newParams)
-
               return newParams
             })
+
+            !isEditingUrl && updatePath()
           }}
           autoNewField
         />
@@ -167,12 +193,26 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         </label>
         <FieldArray
           value={params.headers}
-          onAdd={() => updateField("headers", addArrayField(params.headers))}
+          onAdd={() => {
+            setParams((prev) => {
+              return { ...prev, headers: addArrayField(prev.headers) }
+            })
+          }}
           onRemove={(_key) =>
-            updateField("headers", removeArrayField(params.headers, _key))
+            setParams((prev) => {
+              return {
+                ...prev,
+                headers: removeArrayField(prev.headers, _key),
+              }
+            })
           }
           onChange={(value) =>
-            updateField("headers", updateArrayField(params.headers, value))
+            setParams((prev) => {
+              return {
+                ...prev,
+                headers: updateArrayField(prev.headers, value),
+              }
+            })
           }
         />
       </div>
@@ -192,12 +232,26 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         </label>
         <FieldArray
           value={params.cookies}
-          onAdd={() => updateField("cookies", addArrayField(params.cookies))}
+          onAdd={() => {
+            setParams((prev) => {
+              return { ...prev, cookies: addArrayField(prev.cookies) }
+            })
+          }}
           onRemove={(_key) =>
-            updateField("cookies", removeArrayField(params.cookies, _key))
+            setParams((prev) => {
+              return {
+                ...prev,
+                cookies: removeArrayField(prev.cookies, _key),
+              }
+            })
           }
           onChange={(value) =>
-            updateField("cookies", updateArrayField(params.cookies, value))
+            setParams((prev) => {
+              return {
+                ...prev,
+                cookies: updateArrayField(prev.cookies, value),
+              }
+            })
           }
         />
       </div>

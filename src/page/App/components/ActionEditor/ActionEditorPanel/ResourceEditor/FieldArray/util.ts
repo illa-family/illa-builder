@@ -26,10 +26,17 @@ export function addArrayField(prev: ValueType[]) {
 export function removeArrayField(prev: ValueType[], _key: string) {
   const res = prev.slice(0)
 
-  res.splice(
-    res.findIndex((i) => i._key === _key),
-    1,
-  )
+  if (res.length === 1) {
+    res[0].key = ""
+    res[0].value = ""
+  } else {
+    res.splice(
+      res.findIndex((i) => i._key === _key),
+      1,
+    )
+
+  }
+
 
   return res
 }
@@ -43,7 +50,9 @@ export function updateArrayField(prev: ValueType[], newVal: ValueType) {
     newVal,
   )
 
-  console.log({ res })
-
   return res
+}
+
+export function wrappedWithKey(data: Omit<ValueType, "_key">) {
+  return { ...data, _key: uuidV4() }
 }

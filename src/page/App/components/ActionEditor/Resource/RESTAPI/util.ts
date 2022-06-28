@@ -1,21 +1,28 @@
 import { Params } from "./interface"
 
-export function concatParam2Path(path: string, params: Params[]): string {
-  return (
-    path &&
-    `${path}?${params
-      ?.filter(({ key, value }) => key !== "" && value !== undefined)
-      .map(({ key, value }) => `${key}=${value}`)
-      .join("&")}`
-  )
+export function concatParam(params: Params[]): string {
+  return params
+    ?.filter(({ key, value }) => key !== "" && value !== undefined)
+    .map(({ key, value }) => `${key}=${value}`)
+    .join("&")
+}
+
+export function extractPath(path: string): string {
+  if (path === "") {
+    return ""
+  }
+
+  return path.indexOf("?") === -1
+    ? path.slice(0)
+    : path.slice(0, path.indexOf("?"))
 }
 
 export function hasParamInPath(path?: string): boolean {
   if (!path) {
-    return false;
+    return false
   }
 
-  return path.split("?").length > 1;
+  return path.split("?").length > 1
 }
 
 export function extractParamFromPath(path?: string): Params[] {
