@@ -14,47 +14,90 @@ import {
   labelTextStyle,
   applyGridColIndex,
 } from "@/page/App/components/ActionEditor/Resource/style"
-import { Body } from "./Body"
-import { actionTypeStyle } from "./style"
 import {
   RESTAPIParamProps,
   RESTAPIConfigureValues,
   RESTAPIParamValues,
-} from "../interface"
+} from "@/page/App/components/ActionEditor/Resource/RESTAPI/interface"
+import {
+  concatParam2Path,
+  extractParamFromPath,
+  hasParamInPath,
+} from "@/page/App/components/ActionEditor/Resource/RESTAPI/util"
+import {
+  initArrayField,
+  getEmptyField,
+  addArrayField,
+  removeArrayField,
+  updateArrayField,
+} from "@/page/App/components/ActionEditor/ActionEditorPanel/ResourceEditor/FieldArray/util"
+import { Body } from "./Body"
+import { actionTypeStyle } from "./style"
 
 export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
   const { onChange } = props
+
   const { t } = useTranslation()
   const { resourceId, actionTemplate } = useSelector(getSelectedAction)
-  const resource =
-    useSelector(selectAllResource).find(
-      ({ resourceId: id }) => id === resourceId,
-    ) ?? null
+  const [isEditingUrl, setIsEditingUrl] = useState(false)
+
+  const baseURL =
+    (
+      useSelector(selectAllResource).find(
+        ({ resourceId: id }) => id === resourceId,
+      )?.options as RESTAPIConfigureValues
+    )?.baseURL ?? ""
 
   const config = actionTemplate as RESTAPIParamValues
-  const resourceConfig = resource?.options as RESTAPIConfigureValues
-  const baseURL = resourceConfig?.baseURL
 
   const [params, setParams] = useState({
     method: config?.method ?? "GET",
-    path: config?.path,
-    urlParams: config?.urlParams ?? [],
-    headers: config?.headers ?? [],
-    body: config?.body ?? [],
-    cookies: config?.cookies ?? [],
+    path: config?.path ?? "",
+    urlParams: initArrayField(config?.urlParams),
+    headers: initArrayField(config?.headers),
+    body: config?.body,
+    cookies: initArrayField(config?.cookies),
   })
 
   const hasBody = params.method.indexOf("GET") === -1
 
-  function updateField(field: string) {
-    return (v: any) => {
-      setParams((preParam) => {
-        const newParam = { ...preParam, [field]: v }
+  function updateField(field: string, newFieldVal: any) {
+    const newParams = { ...params, [field]: newFieldVal }
 
-        onChange && onChange(newParam)
-        return newParam
-      })
+    onChange && onChange(newParams)
+    field === "path" && isEditingUrl && updateUrlParams(newParams)
+    field === "urlParams" && !isEditingUrl && updatePath(newParams)
+
+    setParams((preParams) => {
+      return { ...preParams, [field]: newFieldVal }
+    })
+  }
+
+  function updateUrlParams(params: RESTAPIParamValues) {
+    if (!hasParamInPath(params.path)) {
+      return
     }
+
+    setParams((preParams) => {
+      const newUrlParams = extractParamFromPath(params?.path).map(
+        (param, index) => {
+          // to merge original `_key` props
+          return { ...(preParams.urlParams[index] ?? {}), ...param }
+        },
+      )
+      return {
+        ...preParams,
+        urlParams: newUrlParams.length ? newUrlParams : [getEmptyField()],
+      }
+    })
+  }
+
+  function updatePath(params: RESTAPIParamValues) {
+    const [path] = params?.path?.split("?") ?? ["", ""]
+
+    setParams((preParams) => {
+      return { ...preParams, path: concatParam2Path(path, preParams.urlParams) }
+    })
   }
 
   return (
@@ -66,13 +109,17 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         <div css={actionTypeStyle}>
           <Select
             value={params.method}
-            onChange={updateField("method")}
+            onChange={(value) => updateField("method", value)}
             options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
             size={"small"}
           />
           <Input
             value={params.path}
-            onChange={updateField("path")}
+            onFocus={() => setIsEditingUrl(true)}
+            onBlur={() => setIsEditingUrl(false)}
+            onChange={(value) => {
+              updateField("path", value)
+            }}
             placeholder={t(
               "editor.action.resource.rest_api.placeholder.action_url_path",
             )}
@@ -90,7 +137,27 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         </label>
         <FieldArray
           value={params.urlParams}
-          onChange={updateField("urlParams")}
+          onAdd={() => {
+            setParams((prev) => {
+              return { ...prev, urlParams: addArrayField(prev.urlParams) }
+            })
+          }}
+          onRemove={(_key) =>
+            setParams((prev) => {
+              return { ...prev, urlParams: removeArrayField(prev.urlParams, _key) }
+            })
+          }
+          onChange={(value) => {
+            setParams((prev) => {
+              const urlParams = updateArrayField(prev.urlParams, value)
+              const newParams = { ...prev, urlParams }
+
+              !isEditingUrl && updatePath(newParams)
+
+              return newParams
+            })
+          }}
+          autoNewField
         />
       </div>
 
@@ -98,7 +165,16 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         <label css={labelTextStyle}>
           {t("editor.action.resource.rest_api.label.headers")}
         </label>
-        <FieldArray value={params.headers} onChange={updateField("headers")} />
+        <FieldArray
+          value={params.headers}
+          onAdd={() => updateField("headers", addArrayField(params.headers))}
+          onRemove={(_key) =>
+            updateField("headers", removeArrayField(params.headers, _key))
+          }
+          onChange={(value) =>
+            updateField("headers", updateArrayField(params.headers, value))
+          }
+        />
       </div>
 
       {hasBody && (
@@ -106,7 +182,7 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
           <label css={labelTextStyle}>
             {t("editor.action.resource.rest_api.label.body")}
           </label>
-          <Body value={params.body} onChange={updateField("body")} />
+          <Body value={params.body} />
         </div>
       )}
 
@@ -114,7 +190,16 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
         <label css={labelTextStyle}>
           {t("editor.action.resource.rest_api.label.cookies")}
         </label>
-        <FieldArray value={params.cookies} onChange={updateField("cookies")} />
+        <FieldArray
+          value={params.cookies}
+          onAdd={() => updateField("cookies", addArrayField(params.cookies))}
+          onRemove={(_key) =>
+            updateField("cookies", removeArrayField(params.cookies, _key))
+          }
+          onChange={(value) =>
+            updateField("cookies", updateArrayField(params.cookies, value))
+          }
+        />
       </div>
     </div>
   )
