@@ -140,6 +140,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
       },
       ({ data }: { data: { actionId: string } }) => {
         dispatch(actionActions.removeActionItemReducer(data?.actionId))
+        setIsActionDirty(false)
         updateSeletedItemId(data?.actionId)
       },
       () => { },
