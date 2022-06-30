@@ -25,8 +25,7 @@ import { ActionEditorContext } from "@/page/App/components/ActionEditor/context"
 import { ResourceEditorProps } from "./interface"
 
 export const ResourceEditor: FC<ResourceEditorProps> = (props) => {
-  const { triggerMode, onChangeTriggerMode, onCreateResource, onEditResource } =
-    props
+  const { onCreateResource, onEditResource } = props
 
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -35,6 +34,7 @@ export const ResourceEditor: FC<ResourceEditorProps> = (props) => {
   const { setIsActionDirty } = useContext(ActionEditorContext)
   const { resourceId = "" } = activeActionItem
   const isResourceEditable = resourceId !== ""
+  const triggerMode = activeActionItem.actionTemplate?.triggerMode ?? "manual"
 
   const triggerOptions = [
     {
@@ -43,7 +43,7 @@ export const ResourceEditor: FC<ResourceEditorProps> = (props) => {
     },
     {
       label: t("editor.action.panel.option.trigger.on_change"),
-      value: "onChange",
+      value: "change",
     },
   ]
 
@@ -56,7 +56,18 @@ export const ResourceEditor: FC<ResourceEditorProps> = (props) => {
         <span css={fillingStyle} />
         <Select
           value={triggerMode}
-          onChange={onChangeTriggerMode}
+          onChange={(value) => {
+            setIsActionDirty?.(true)
+            dispatch(
+              configActions.updateSelectedAction({
+                ...activeActionItem,
+                actionTemplate: {
+                  ...activeActionItem.actionTemplate,
+                  triggerMode: value,
+                },
+              }),
+            )
+          }}
           options={triggerOptions}
           defaultValue={0}
           css={css(actionSelectStyle, triggerSelectStyle)}

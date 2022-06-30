@@ -1,4 +1,4 @@
-import { FC, useState, useRef, useContext, Fragment } from "react"
+import { FC, useState, useRef, useContext } from "react"
 import { AnimatePresence } from "framer-motion"
 import { useDispatch, useSelector } from "react-redux"
 import { useTranslation } from "react-i18next"
@@ -16,7 +16,7 @@ import { TitleInput } from "@/page/App/components/ActionEditor/ActionEditorPanel
 import { ActionResultType } from "@/page/App/components/ActionEditor/ActionEditorPanel/ActionResult/interface"
 import { ActionResult } from "@/page/App/components/ActionEditor/ActionEditorPanel/ActionResult"
 import { ACTION_TYPE } from "@/page/App/components/ActionEditor/constant"
-import { ActionEditorPanelProps, TriggerMode } from "./interface"
+import { ActionEditorPanelProps } from "./interface"
 import {
   containerStyle,
   headerStyle,
@@ -41,7 +41,6 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
   const { setIsActionDirty, baseActionApi } = useContext(ActionEditorContext)
   const [moreBtnMenuVisible, setMoreBtnMenuVisible] = useState(false)
   const [actionResVisible, setActionResVisible] = useState(false)
-  const [triggerMode, setTriggerMode] = useState<TriggerMode>("manual")
   const [isRuning, setIsRuning] = useState(false)
   const [result, setResult] = useState<ActionResultType>()
   const [duration, setDuaraion] = useState<string>()
@@ -49,6 +48,7 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
   const runningIntervalRef = useRef<NodeJS.Timer>()
   const activeActionItem = useSelector(getSelectedAction)
   const actionType = activeActionItem?.actionType ?? ""
+  const triggerMode = activeActionItem.actionTemplate?.triggerMode ?? "manual"
   let editorNode = null
   let runBtnText = ""
 
@@ -194,8 +194,6 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
     case ACTION_TYPE.MYSQL:
       editorNode = (
         <ResourceEditor
-          triggerMode={triggerMode}
-          onChangeTriggerMode={setTriggerMode}
           onCreateResource={onCreateResource}
           onEditResource={onEditResource}
         />

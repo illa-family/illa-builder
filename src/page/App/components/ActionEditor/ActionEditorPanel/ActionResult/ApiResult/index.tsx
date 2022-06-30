@@ -32,8 +32,8 @@ export const ApiResult: FC<ApiResultProps> = (props) => {
     request: {
       url: concatUrl(url, urlParams, baseURL),
       method,
-      body: body.length ? body : null,
-      headers: headers.length ? headers : null,
+      body: body?.length ? body : null,
+      headers: headers?.length ? headers : null,
     },
     response: result,
   }

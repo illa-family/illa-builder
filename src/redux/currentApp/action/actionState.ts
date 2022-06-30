@@ -11,6 +11,7 @@ interface ActionConnectNetwork {
 export interface ActionItemConfig {
   [index: string]: any
 
+  triggerMode?: "manual" | "change"
   transformer?: string
   events?: []
 }
