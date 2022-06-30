@@ -1,10 +1,7 @@
-import { FC, useState } from "react"
+import { FC } from "react"
 import { useSelector } from "react-redux"
 import { CodeEditor } from "@/components/CodeEditor"
-import {
-  MySQLParamProps,
-  MySQLParamValues,
-} from "@/page/App/components/ActionEditor/Resource/MySQL/interface"
+import { MySQLParamProps } from "@/page/App/components/ActionEditor/Resource/MySQL/interface"
 import { getSelectedAction } from "@/redux/config/configSelector"
 import { panelPaddingStyle } from "./style"
 
@@ -18,7 +15,8 @@ export const MySQLParam: FC<MySQLParamProps> = (props) => {
       <CodeEditor
         value={query}
         onChange={(value) => {
-          onChange({ query: value })
+          // TODO: @spike Temporary Fix `mode` to `sql`, should support `gui` mode later
+          onChange({ query: value, mode })
         }}
         mode="TEXT_SQL"
         expectedType="String"
