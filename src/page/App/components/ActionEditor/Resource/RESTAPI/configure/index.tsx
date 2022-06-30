@@ -55,17 +55,16 @@ export const RESTAPIConfigure = forwardRef<
     defaultValues: {
       urlParams: [EmptyField],
       headers: [EmptyField],
-      body: [EmptyField],
-      forwardAllCookies: false,
       authentication: "none",
-      oauth2UseClientCredentialsAuth: false,
-      oauth2ShareUserCredentials: false,
+      /* TODO: @spike hide param that not support yet */
+      // forwardAllCookies: false,
+      // body: [EmptyField],
+      // oauth2UseClientCredentialsAuth: false,
+      // oauth2ShareUserCredentials: false,
       resourceName: resourceConfig?.resourceName,
       ...resourceConfig?.options,
     },
   })
-
-  const [authType, setAuthType] = useState("none")
 
   const submitForm: SubmitHandler<RESTAPIConfigureValues> = (data) => {
     onSubmit?.({
@@ -76,7 +75,7 @@ export const RESTAPIConfigure = forwardRef<
   }
 
   const renderAuthConfig = () => {
-    switch (authType) {
+    switch (watch("authentication")) {
       case "basic":
         return <BasicAuth control={control} watch={watch} />
       case "bearer":
@@ -203,11 +202,10 @@ export const RESTAPIConfigure = forwardRef<
           {t("editor.action.resource.rest_api.label.authentication")}
         </label>
         <Controller
-          render={() => (
+          render={({ field }) => (
             <Select
               size={"small"}
-              onChange={setAuthType}
-              value={authType}
+              {...field}
               triggerProps={{ _css: topZIndexStyle }}
             >
               <Option value={"none"}>
@@ -225,7 +223,7 @@ export const RESTAPIConfigure = forwardRef<
                   "editor.action.resource.rest_api.option.authentication.basic_auth",
                 )}
               </Option>
-              {/*               TODO: @spike not support yet */}
+              {/* TODO: @spike not support yet */}
               {/* <Option value={"OAuth2"}>
                   {t(
                   "editor.action.resource.rest_api.option.authentication.oauth2",
