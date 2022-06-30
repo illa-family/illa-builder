@@ -43,8 +43,19 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
 
     const lastItemId = actionItems[length - 1].actionId
 
-    if (id === lastItemId && length > 1) {
-      updateActiveActionItemId(actionItems[length - 2].actionId)
+    if (id === lastItemId) {
+      if (length === 1) {
+        dispatch(
+          configActions.updateSelectedAction({
+            actionId: "",
+            displayName: "",
+            actionType: "",
+          }),
+        )
+      } else {
+        updateActiveActionItemId(actionItems[length - 2].actionId)
+
+      }
     } else {
       updateActiveActionItemId(lastItemId)
     }
@@ -140,9 +151,11 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
         method: "DELETE",
       },
       ({ data }: { data: { actionId: string } }) => {
-        dispatch(actionActions.removeActionItemReducer(data?.actionId))
+        const removedActionId = data.actionId
+
+        dispatch(actionActions.removeActionItemReducer(removedActionId))
         setIsActionDirty(false)
-        updateSeletedItemId(data?.actionId)
+        updateSeletedItemId(removedActionId)
       },
       () => { },
       () => { },
@@ -247,8 +260,6 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
                 setActionType("edit")
                 setFormVisible(true)
               }}
-              onChange={() => setIsActionDirty(true)}
-              onSave={() => setIsActionDirty(false)}
             />
           }
         />
