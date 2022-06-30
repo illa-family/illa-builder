@@ -194,13 +194,14 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
     case ACTION_TYPE.MYSQL:
       editorNode = (
         <ResourceEditor
+          key={activeActionItem.actionId}
           onCreateResource={onCreateResource}
           onEditResource={onEditResource}
         />
       )
       break
     case ACTION_TYPE.TRANSFORMER:
-      editorNode = <TransformerEditor />
+      editorNode = <TransformerEditor key={activeActionItem.actionId} />
       break
     default:
       break
