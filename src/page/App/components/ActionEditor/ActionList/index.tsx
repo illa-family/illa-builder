@@ -79,6 +79,7 @@ export const ActionList: FC<ActionListProps> = (props) => {
   function updateName(originName: string) {
     if (originName !== editingName && !isRenameError) {
       onUpdateActionItem(editingActionItemId, {
+        ...activeActionItem,
         displayName: editingName,
       })
     }

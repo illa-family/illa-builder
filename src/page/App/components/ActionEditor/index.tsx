@@ -15,8 +15,8 @@ import { ActionType } from "@/page/App/components/ActionEditor/ResourceForm/inte
 import { ActionList } from "@/page/App/components/ActionEditor/ActionList"
 import { ActionEditorPanel } from "@/page/App/components/ActionEditor/ActionEditorPanel"
 import { ResourceForm } from "./ResourceForm"
+import { ActionEditorLayout } from "./Layout"
 import { ActionEditorProps } from "./interface"
-import { ActionEditorLayout } from "./layout"
 import { ActionEditorContext } from "./context"
 
 export const ActionEditor: FC<ActionEditorProps> = (props) => {
@@ -50,6 +50,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
             actionId: "",
             displayName: "",
             actionType: "",
+            actionTemplate: {}
           }),
         )
       } else {
@@ -93,11 +94,18 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
   }
 
   function onUpdateActionItem(actionId: string, data: Partial<ActionItem>) {
+    const { resourceId, actionType, displayName, actionTemplate } = data;
+
     Api.request(
       {
         url: `${baseActionApi}/${actionId}`,
         method: "PUT",
-        data: data,
+        data: {
+          resourceId,
+          actionType,
+          displayName,
+          actionTemplate
+        },
       },
       ({ data }: { data: ActionItem }) => {
         dispatch(
@@ -126,7 +134,6 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
           url: baseActionApi,
           method: "POST",
           data: {
-            actionTemplate: {},
             ...duplicateActionData,
             displayName: ActionDisplayNameGenerator.getDisplayName(actionType),
           },
