@@ -92,14 +92,19 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
   }
 
   function save() {
-    const { data, rawData, error, ...actionPayload } = activeActionItem
-    const actionId = activeActionItem.actionId
+    const { actionId, resourceId, actionType, displayName, actionTemplate } =
+      activeActionItem
 
     Api.request<ActionItem>(
       {
         url: `${baseActionApi}/${actionId}`,
         method: "PUT",
-        data: actionPayload,
+        data: {
+          resourceId,
+          actionType,
+          displayName,
+          actionTemplate,
+        },
       },
       ({ data }) => {
         dispatch(
@@ -120,7 +125,8 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
   }
 
   function run() {
-    const { actionType } = activeActionItem
+    const { resourceId, actionType, actionTemplate, displayName } =
+      activeActionItem
 
     if (actionType === "transformer") {
       // TODO: run transformer
@@ -134,7 +140,10 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
         url: `${baseActionApi}/${activeActionItem?.actionId}/run`,
         method: "POST",
         data: {
-          ...activeActionItem,
+          resourceId,
+          actionType,
+          actionTemplate,
+          displayName,
         },
       },
       (response) => {

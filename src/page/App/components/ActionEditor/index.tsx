@@ -126,15 +126,16 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
     const targetItem = actionItems.find((i) => i.actionId === actionId)
 
     if (targetItem) {
-      const actionType = targetItem.actionType
-      const { actionId, ...duplicateActionData } = targetItem
+      const { resourceId, actionType, actionTemplate } = targetItem
 
       Api.request(
         {
           url: baseActionApi,
           method: "POST",
           data: {
-            ...duplicateActionData,
+            resourceId,
+            actionType,
+            actionTemplate,
             displayName: ActionDisplayNameGenerator.getDisplayName(actionType),
           },
         },
