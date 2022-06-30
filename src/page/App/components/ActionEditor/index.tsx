@@ -115,6 +115,7 @@ export const ActionEditor: FC<ActionEditorProps> = (props) => {
           url: baseActionApi,
           method: "POST",
           data: {
+            actionTemplate: {},
             ...duplicateActionData,
             displayName: ActionDisplayNameGenerator.getDisplayName(actionType),
           },
