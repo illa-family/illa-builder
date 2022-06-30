@@ -96,7 +96,7 @@ export const ActionList: FC<ActionListProps> = (props) => {
   }
 
   function onAddAction(info: ActionInfo) {
-    const { actionType, resourceId = "" } = info
+    const { actionType, resourceId } = info
 
     setActionGeneratorVisible(false)
 
