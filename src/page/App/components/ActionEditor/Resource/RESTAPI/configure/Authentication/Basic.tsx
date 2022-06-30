@@ -47,3 +47,5 @@ export const BasicAuth: FC<BasicAuthProps> = (props) => {
     </>
   )
 }
+
+BasicAuth.displayName = "BasicAuth"

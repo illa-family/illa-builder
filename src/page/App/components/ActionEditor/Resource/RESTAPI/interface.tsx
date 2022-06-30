@@ -19,6 +19,7 @@ export interface RESTAPIConfigureValues {
   authentication?: string
   basicUsername?: string
   basicPassword?: string
+  bearerToken?: string
   oauth2UseClientCredentialsAuth?: boolean
   oauth2CallbackUrl?: string
   oauthAuthUrl?: string
