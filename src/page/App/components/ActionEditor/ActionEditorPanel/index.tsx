@@ -145,6 +145,20 @@ export const ActionEditorPanel: FC<ActionEditorPanelProps> = (props) => {
           actionTemplate,
           displayName,
         },
+        // TODO: @spike temporay set `User-Agent` in headers,
+        // will be removed after handle by server later
+        transformRequest: [
+          function(data) {
+            if (actionType === ACTION_TYPE.REST_API) {
+              data.actionTemplate.headers = [
+                ...data.actionTemplate.headers,
+                ["User-Agent", navigator.userAgent],
+              ]
+            }
+
+            return JSON.stringify(data)
+          },
+        ],
       },
       (response) => {
         // save data to action
