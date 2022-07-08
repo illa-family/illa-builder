@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useMemo } from "react"
 import { BaseInputSetterProps } from "./interface"
 import { applyInputSetterWrapperStyle } from "./style"
 import { CodeEditor } from "@/components/CodeEditor"
@@ -22,10 +22,18 @@ export const BaseInput: FC<BaseInputSetterProps> = (props) => {
     widgetDisplayName,
   } = props
 
+  const _value = useMemo(() => {
+    if (typeof value === "object") {
+      return `{{${JSON.stringify(value)}}}`
+    } else {
+      return value
+    }
+  }, [value])
+
   return (
     <div css={applyInputSetterWrapperStyle(isSetterSingleRow)}>
       <CodeEditor
-        value={value ?? ""}
+        value={_value ?? ""}
         placeholder={placeholder}
         onChange={(value) => {
           handleUpdateDsl(attrName, value)

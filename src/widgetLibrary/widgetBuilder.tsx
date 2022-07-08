@@ -94,6 +94,11 @@ import {
   EDITABLE_TEXT_WIDGET_CONFIG,
   EditableTextWidget,
 } from "@/widgetLibrary/EditableWidget"
+import {
+  CHART_PANEL_CONFIG,
+  CHART_WIDGET_CONFIG,
+  ChartWidget,
+} from "@/widgetLibrary/Chart"
 
 export const WidgetConfig: WidgetConfigs = {
   TEXT_WIDGET: {
@@ -190,6 +195,11 @@ export const WidgetConfig: WidgetConfigs = {
     widget: EditableTextWidget,
     config: EDITABLE_TEXT_WIDGET_CONFIG,
     panelConfig: EDITABLE_TEXT_PANEL_CONFIG,
+  },
+  CHART: {
+    widget: ChartWidget,
+    config: CHART_WIDGET_CONFIG,
+    panelConfig: CHART_PANEL_CONFIG,
   },
 }
 

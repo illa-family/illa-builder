@@ -568,6 +568,9 @@
     },
     "editable_text": {
       "name": "Editable Text"
+    },
+    "chart": {
+      "name": "Chart"
     }
   },
   "Setting": "Setting",
