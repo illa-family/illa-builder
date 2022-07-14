@@ -521,7 +521,9 @@
         "text_align": "Text align",
         "text_size": "Text size",
         "start_date": "Start date",
-        "end_data": "End date"
+        "end_data": "End date",
+        "title": "Title",
+        "content": "Content"
       },
       "setter_default_value": {
         "solid": "Solid",
@@ -618,6 +620,9 @@
     },
     "timeline": {
       "name": "Timeline"
+    },
+    "alert": {
+      "name": "Alert"
     }
   },
   "Setting": "Setting",

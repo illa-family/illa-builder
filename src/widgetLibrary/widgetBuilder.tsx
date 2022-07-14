@@ -109,6 +109,12 @@ import {
   EDITABLE_EVENT_HANDLER_CONFIG,
   EditableTextWidget,
 } from "@/widgetLibrary/EditableWidget"
+import {
+  ALERT_PANEL_CONFIG,
+  ALERT_WIDGET_CONFIG,
+  ALERT_EVENT_HANDLER_CONFIG,
+  AlertWidget,
+} from "@/widgetLibrary/AlertWidget"
 
 export const WidgetConfig: WidgetConfigs = {
   TEXT_WIDGET: {
@@ -221,6 +227,12 @@ export const WidgetConfig: WidgetConfigs = {
     panelConfig: EDITABLE_TEXT_PANEL_CONFIG,
     eventHandlerConfig: EDITABLE_EVENT_HANDLER_CONFIG,
   },
+  ALERT_WIDGET: {
+    widget: AlertWidget,
+    config: ALERT_WIDGET_CONFIG,
+    panelConfig: ALERT_PANEL_CONFIG,
+    eventHandlerConfig: ALERT_EVENT_HANDLER_CONFIG
+  }
 }
 
 export type WidgetType = keyof typeof WidgetConfig

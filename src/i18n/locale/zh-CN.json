@@ -619,6 +619,9 @@
     },
     "timeline": {
       "name": "时间线"
+    },
+    "alert": {
+      "name": "警告提示"
     }
   },
   "Setting": "设置",
