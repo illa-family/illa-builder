@@ -5,12 +5,11 @@ import {
   applyColorLumpCss,
   colorInputContainerCss,
   colorInputCss,
-  labelCss,
   percentInputCss,
   triggerCss,
 } from "./styles"
 import { HsvaColor, hsvaToRgba, hsvaToHex, hexToHsva } from "@uiw/color-convert"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { ColorPickerProps } from "./interface"
 import useDebounce from "react-use/lib/useDebounce"
 
@@ -32,7 +31,14 @@ function updateAlphaInputValue(alpha: number) {
 }
 
 function ColorPicker(props: ColorPickerProps) {
-  const { defaultColor = "#FFFFFF", labelName = "background" } = props
+  const {
+    defaultColor = "#FFFFFF",
+    onColorChange,
+    placeholder,
+    onHueChange,
+    onAlphaChange,
+    prefabricatedColors,
+  } = props
   const defaultHsva = useMemo(
     () => hexToHsva(defaultColor.substring(0, 7)),
     [defaultColor],
@@ -42,12 +48,15 @@ function ColorPicker(props: ColorPickerProps) {
   const [inputValue, setInputValue] = useState(hsvaToHex(hsva))
   const [alphaPercentValue, setAlphaPercentValue] = useState("100%")
 
-  const handleColorPick = useCallback((hsva: HsvaColor) => {
-    setHsva(hsva)
-    setAlphaPercentValue(updateAlphaInputValue(hsva.a))
-    setInputValue(hsvaToHex(hsva))
-    props.onColorChange && props.onColorChange(hsva)
-  }, [])
+  const handleColorPick = useCallback(
+    (hsva: HsvaColor) => {
+      setHsva(hsva)
+      setAlphaPercentValue(updateAlphaInputValue(hsva.a))
+      setInputValue(hsvaToHex(hsva))
+      onColorChange?.(hsva)
+    },
+    [onColorChange],
+  )
 
   const [inputFocus, setInputFocus] = useState(false)
   const [debouncedInputFocus, setDebouncedInputFocus] = useState(false)
@@ -64,8 +73,7 @@ function ColorPicker(props: ColorPickerProps) {
   )
 
   return (
-    <div placeholder={props.placeholder} css={colorInputContainerCss}>
-      <span css={labelCss}>{labelName}</span>
+    <div placeholder={placeholder} css={colorInputContainerCss}>
       <div css={colorInputCss}>
         <Input
           inputRef={inputRef}
@@ -84,9 +92,9 @@ function ColorPicker(props: ColorPickerProps) {
                   content={
                     <ColorPickerOperation
                       color={hsva}
-                      handleHueChange={props.onHueChange}
-                      handleAlphaChange={props.onAlphaChange}
-                      prefabricatedColors={props.prefabricatedColors}
+                      handleHueChange={onHueChange}
+                      handleAlphaChange={onAlphaChange}
+                      prefabricatedColors={prefabricatedColors}
                       handleColorPick={handleColorPick}
                       handleClosePanel={() => setCurrentVisible(false)}
                     />
@@ -112,6 +120,7 @@ function ColorPicker(props: ColorPickerProps) {
           }}
           onBlur={() => {
             setInputFocus(false)
+            onColorChange?.(hsva)
             setInputValue(hsvaToHex(hsva))
           }}
           withoutNormalBorder={true}
@@ -148,6 +157,7 @@ function ColorPicker(props: ColorPickerProps) {
                 onBlur={() => {
                   setInputFocus(false)
                   setAlphaPercentValue(hsva.a * 100 + "%")
+                  onColorChange?.(hsva)
                 }}
                 css={percentInputCss}
               />
