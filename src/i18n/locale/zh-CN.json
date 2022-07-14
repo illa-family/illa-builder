@@ -522,7 +522,9 @@
         "text_align": "文本对齐",
         "text_size": "文本大小",
         "start_date": "开始日期",
-        "end_data": "结束日期"
+        "end_data": "结束日期",
+        "closable": "是否可关闭",
+        "show_icon": "是否显示图标"
       },
       "setter_default_value": {
         "solid": "Solid",

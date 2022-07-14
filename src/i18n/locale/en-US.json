@@ -524,7 +524,9 @@
         "start_date": "Start date",
         "end_data": "End date",
         "title": "Title",
-        "content": "Content"
+        "content": "Content",
+        "closable": "Closable",
+        "show_icon": "ShowIcon"
       },
       "setter_default_value": {
         "solid": "Solid",

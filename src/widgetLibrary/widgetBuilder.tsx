@@ -231,8 +231,8 @@ export const WidgetConfig: WidgetConfigs = {
     widget: AlertWidget,
     config: ALERT_WIDGET_CONFIG,
     panelConfig: ALERT_PANEL_CONFIG,
-    eventHandlerConfig: ALERT_EVENT_HANDLER_CONFIG
-  }
+    eventHandlerConfig: ALERT_EVENT_HANDLER_CONFIG,
+  },
 }
 
 export type WidgetType = keyof typeof WidgetConfig

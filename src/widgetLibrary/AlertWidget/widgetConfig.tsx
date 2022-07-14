@@ -7,11 +7,13 @@ export const ALERT_WIDGET_CONFIG: WidgetConfig = {
   widgetName: "widget.alert.name",
   icon: <ButtonWidgetIcon size="100%" />,
   sessionType: "PRESENTATION",
-  w: 20,
+  w: 30,
   h: 10,
   defaults: {
     type: "info",
     title: "Alert Title",
-    content: "Alert Content"
+    content: "Alert Content",
+    closable: "{{false}}",
+    showIcon: "{{true}}",
   },
 }
