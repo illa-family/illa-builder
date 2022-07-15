@@ -3,7 +3,7 @@ import { Alert } from "@illa-design/alert"
 import { containerStyle } from "@/widgetLibrary/PublicSector/containerStyle"
 import { WrappedAlertProps } from "./interface"
 
-export const WrappedAlert = forwardRef<any, WrappedAlertProps>((props, ref) => {
+export const WrappedAlert = forwardRef<HTMLDivElement, WrappedAlertProps>((props, ref) => {
   const { type, title, content, closable, showIcon } = props
 
   return (
