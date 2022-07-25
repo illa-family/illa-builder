@@ -1,6 +1,6 @@
 import { PanelConfig } from "@/page/App/components/InspectPanel/interface"
-import i18n from "@/i18n/config"
 import { VALIDATION_TYPES } from "@/utils/validationFactory"
+import i18n from "@/i18n/config"
 
 const baseWidgetName = "timeline"
 export const TIMELINE_PANEL_CONFIG: PanelConfig[] = [
@@ -19,9 +19,16 @@ export const TIMELINE_PANEL_CONFIG: PanelConfig[] = [
       {
         id: `${baseWidgetName}-direction`,
         labelName: i18n.t("editor.inspect.setter_label.direction"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.timeline_direction"),
         setterType: "RADIO_GROUP_SETTER",
         attrName: "direction",
-        options: ["vertical", "horizontal"],
+        options: [
+          { label: "vertical", value: "vertical" },
+          {
+            label: "horizontal",
+            value: "horizontal",
+          },
+        ],
       },
       {
         id: `${baseWidgetName}-pending`,
@@ -39,8 +46,10 @@ export const TIMELINE_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "text-layout-hidden",
         labelName: i18n.t("editor.inspect.setter_label.hidden"),
-        setterType: "INPUT_SETTER",
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.hidden"),
+        setterType: "DYNAMIC_SWITCH_SETTER",
         attrName: "hidden",
+        useCustomLayout: true,
         expectedType: VALIDATION_TYPES.BOOLEAN,
       },
     ],

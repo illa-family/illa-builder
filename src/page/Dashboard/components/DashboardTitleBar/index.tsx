@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { TabPane, Tabs } from "@illa-design/tabs"
-import { Avatar } from "@illa-design/avatar"
 import { DownIcon } from "@illa-design/icon"
 import { globalColor, illaPrefix } from "@illa-design/theme"
 import { Divider } from "@illa-design/divider"
@@ -16,7 +15,7 @@ import {
   navBarLogoContainerStyle,
   settingBodyStyle,
   settingUserStyle,
-  userAvatarStyle,
+  applyUserAvatarStyle,
   usernameStyle,
   settingItemStyle,
   settingListStyle,
@@ -24,15 +23,18 @@ import {
 import { clearLocalStorage } from "@/utils/storage"
 import { getCurrentUser } from "@/redux/currentUser/currentUserSelector"
 
-const SettingTrigger: FC = () => {
+const SettingTrigger: FC<{ avatarBgColor: string; avatarText: string }> = (
+  props,
+) => {
+  const { avatarBgColor, avatarText } = props
   const { t } = useTranslation()
   const navigate = useNavigate()
   const userInfo = useSelector(getCurrentUser)
   return (
     <div css={settingBodyStyle}>
       <div css={settingUserStyle}>
-        <Avatar size="small" css={userAvatarStyle} />
-        <span css={usernameStyle}>{userInfo?.username}</span>
+        <span css={applyUserAvatarStyle(avatarBgColor)}>{avatarText}</span>
+        <span css={usernameStyle}>{userInfo?.nickname}</span>
       </div>
       <Divider />
       <div css={settingListStyle}>
@@ -48,7 +50,7 @@ const SettingTrigger: FC = () => {
           css={settingItemStyle}
           onClick={() => {
             clearLocalStorage()
-            navigate("/user/login")
+            window.location.href = "/user/login"
           }}
         >
           {t("Logout")}
@@ -60,6 +62,10 @@ const SettingTrigger: FC = () => {
 
 export const DashboardTitleBar: FC = () => {
   const { t } = useTranslation()
+  const userInfo = useSelector(getCurrentUser)
+  const avatarBgColor =
+    `${userInfo?.userId}`.padEnd(6, "0").substring(0, 6) || "654aec"
+  const avatarText = userInfo?.nickname?.substring?.(0, 1).toUpperCase() || "U"
   let navigate = useNavigate()
   let location = useLocation()
   let pathList = location.pathname.split("/")
@@ -94,10 +100,17 @@ export const DashboardTitleBar: FC = () => {
             position="br"
             trigger="click"
             triggerProps={{ closeDelay: 0, openDelay: 0 }}
-            dropList={<SettingTrigger />}
+            dropList={
+              <SettingTrigger
+                avatarBgColor={avatarBgColor}
+                avatarText={avatarText}
+              />
+            }
           >
             <div>
-              <Avatar colorScheme="techPurple" size="small" />
+              <span css={applyUserAvatarStyle(avatarBgColor)}>
+                {avatarText}
+              </span>
               <DownIcon
                 _css={expandStyle}
                 size="12px"

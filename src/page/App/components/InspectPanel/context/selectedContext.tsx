@@ -1,76 +1,43 @@
-import { createContext, ReactNode, FC, useMemo } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { componentsActions } from "@/redux/currentApp/editor/components/componentsSlice"
-import { getComponentNodeBySingleSelected } from "@/redux/currentApp/editor/components/componentsSelector"
-import { Empty } from "@/page/App/components/InspectPanel/empty"
+import { createContext, ReactNode, FC } from "react"
 
 interface Injected {
   widgetType: string
   widgetDisplayName: string
-  widgetParentDisplayName: string
+  widgetParentDisplayName: string | null
   widgetProps: Record<string, any>
+  widgetOrAction: "WIDGET" | "ACTION"
   handleUpdateDsl: (attrPath: string, value: any) => void
 }
 
 export const SelectedPanelContext = createContext<Injected>({} as Injected)
 
 interface Props {
-  propsPanelConfig?: Record<string, any>
-  handleUpdateItemPanelConfig?: (value: Record<string, any>) => void
-  handleUpdateItemDsl?: (value: Record<string, any>) => void
+  widgetType: string
+  widgetDisplayName: string
+  widgetParentDisplayName: string | null
+  widgetProps: Record<string, any>
+  handleUpdateDsl: (attrPath: string, value: any) => void
+  widgetOrAction: "WIDGET" | "ACTION"
   children?: ReactNode
 }
 
-export const SelectedProvider: FC<Props> = ({
-  propsPanelConfig,
-  children,
-  handleUpdateItemPanelConfig,
-  handleUpdateItemDsl,
-}) => {
-  const singleSelectedComponentNode = useSelector(
-    getComponentNodeBySingleSelected,
-  )
-
-  const widgetType = useMemo(
-    () => singleSelectedComponentNode?.type,
-    [singleSelectedComponentNode],
-  )
-
-  const widgetDisplayName = useMemo(
-    () => singleSelectedComponentNode?.displayName as string,
-    [singleSelectedComponentNode],
-  )
-
-  const widgetParentDisplayName = useMemo(
-    () => singleSelectedComponentNode?.parentNode as string,
-    [singleSelectedComponentNode],
-  )
-
-  const widgetProps = useMemo(
-    () => singleSelectedComponentNode?.props || {},
-    [singleSelectedComponentNode],
-  )
-
-  const dispatch = useDispatch()
-
-  const handleUpdateDsl = (attrPath: string, value: any) => {
-    if (!widgetProps || !widgetDisplayName) return
-    const updateSlice = { [attrPath]: value }
-    dispatch(
-      componentsActions.updateComponentPropsReducer({
-        displayName: widgetDisplayName,
-        updateSlice,
-      }),
-    )
-  }
-
-  if (!widgetType || !widgetDisplayName) return <Empty />
+export const SelectedProvider: FC<Props> = (props) => {
+  const {
+    children,
+    widgetType,
+    widgetDisplayName,
+    widgetParentDisplayName,
+    widgetProps,
+    widgetOrAction,
+    handleUpdateDsl,
+  } = props
 
   const value = {
     widgetType,
     widgetDisplayName,
     widgetParentDisplayName,
     widgetProps,
+    widgetOrAction,
     handleUpdateDsl,
   }
 

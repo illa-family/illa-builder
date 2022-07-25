@@ -5,8 +5,8 @@ import {
 } from "@illa-design/icon"
 import { colorSchemeOptions } from "@/widgetLibrary/PublicSector/colorSchemeOptions"
 import { PanelConfig } from "@/page/App/components/InspectPanel/interface"
-import i18n from "@/i18n/config"
 import { VALIDATION_TYPES } from "@/utils/validationFactory"
+import i18n from "@/i18n/config"
 
 export const CIRCLE_PROGRESS_PANEL_CONFIG: PanelConfig[] = [
   {
@@ -16,6 +16,7 @@ export const CIRCLE_PROGRESS_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "circle-progress-basic-Value",
         labelName: i18n.t("editor.inspect.setter_label.value"),
+        labelDesc: i18n.t("editor.inspect.setter_label.progress_percentage"),
         attrName: "value",
         setterType: "INPUT_SETTER",
         expectedType: VALIDATION_TYPES.STRING,
@@ -35,6 +36,7 @@ export const CIRCLE_PROGRESS_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "circle-progress-adornments-tooltip",
         labelName: i18n.t("editor.inspect.setter_label.tooltip"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.tooltip"),
         attrName: "tooltipText",
         setterType: "INPUT_SETTER",
         expectedType: VALIDATION_TYPES.STRING,
@@ -47,9 +49,11 @@ export const CIRCLE_PROGRESS_PANEL_CONFIG: PanelConfig[] = [
     children: [
       {
         id: "circle-progress-layout-hidden",
-        setterType: "INPUT_SETTER",
+        setterType: "DYNAMIC_SWITCH_SETTER",
         labelName: i18n.t("editor.inspect.setter_label.hidden"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.hidden"),
         attrName: "hidden",
+        useCustomLayout: true,
         expectedType: VALIDATION_TYPES.BOOLEAN,
       },
       {
@@ -87,8 +91,8 @@ export const CIRCLE_PROGRESS_PANEL_CONFIG: PanelConfig[] = [
         childrenSetter: [
           {
             id: "circle-progress-color",
-            labelName: i18n.t("editor.inspect.setter_label.color"),
-            setterType: "COLOR_SELECT_SETTER",
+            labelName: i18n.t("editor.inspect.setter_label.styles"),
+            setterType: "COLOR_PICKER_SETTER",
             attrName: "color",
             defaultValue: "blue",
             options: colorSchemeOptions,
@@ -96,7 +100,7 @@ export const CIRCLE_PROGRESS_PANEL_CONFIG: PanelConfig[] = [
           {
             id: "circle-progress-trailColor",
             labelName: i18n.t("editor.inspect.setter_label.trail_color"),
-            setterType: "COLOR_SELECT_SETTER",
+            setterType: "COLOR_PICKER_SETTER",
             attrName: "trailColor",
             defaultValue: "gray",
             options: colorSchemeOptions,

@@ -16,7 +16,7 @@ CodeMirror.defineMode(EditorModes.TEXT_JS, function (config) {
       open: "{{",
       close: "}}",
       mode: CodeMirror.getMode(config, {
-        name: "application/javascript",
+        name: "application/json",
       }),
       delimStyle: "illa-expression",
       innerStyle: "illa-expression",
@@ -32,7 +32,7 @@ CodeMirror.defineMode(EditorModes.SQL_JS, function (config) {
       open: "{{",
       close: "}}",
       mode: CodeMirror.getMode(config, {
-        name: "application/javascript",
+        name: "application/json",
       }),
       delimStyle: "illa-expression",
       innerStyle: "illa-expression",
@@ -50,7 +50,7 @@ CodeMirror.defineMode(EditorModes.JAVASCRIPT, function (config) {
       open: "{{",
       close: "}}",
       mode: CodeMirror.getMode(config, {
-        name: "application/javascript",
+        name: "application/json",
       }),
       delimStyle: "illa-expression",
       innerStyle: "illa-expression",

@@ -1,7 +1,7 @@
 import { DateWidgetIcon } from "@illa-design/icon"
 import { WidgetConfig } from "@/widgetLibrary/interface"
-import i18n from "@/i18n/config"
 import dayjs from "dayjs"
+import i18n from "@/i18n/config"
 
 export const DATE_WIDGET_CONFIG: WidgetConfig = {
   type: "DATE_WIDGET",
@@ -9,7 +9,7 @@ export const DATE_WIDGET_CONFIG: WidgetConfig = {
   widgetName: i18n.t("widget.date.name"),
   icon: <DateWidgetIcon size="100%" />,
   sessionType: "CALENDAR",
-  w: 21,
+  w: 12,
   h: 5,
   defaults: {
     value: dayjs().format("YYYY-MM-DD"),
@@ -19,5 +19,6 @@ export const DATE_WIDGET_CONFIG: WidgetConfig = {
     labelAlign: "left",
     labelPosition: "left",
     labelWidth: "{{33}}",
+    hidden: false,
   },
 }

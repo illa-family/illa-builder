@@ -2,10 +2,9 @@ import ColorPickerOperation from "./ColorPickerOperation"
 import { Trigger } from "@illa-design/trigger"
 import { Input } from "@illa-design/input"
 import {
-  applyColorLumpCss,
+  applyColorLumpRadioStyle,
   colorInputContainerCss,
   colorInputCss,
-  labelCss,
   percentInputCss,
   triggerCss,
 } from "./styles"
@@ -32,28 +31,51 @@ function updateAlphaInputValue(alpha: number) {
 }
 
 function ColorPicker(props: ColorPickerProps) {
-  const { defaultColor = "#FFFFFF", labelName = "background" } = props
-  const defaultHsva = useMemo(
-    () => hexToHsva(defaultColor.substring(0, 7)),
-    [defaultColor],
-  )
+  const {
+    defaultColor = "#FFFFFF",
+    onColorChange,
+    placeholder,
+    prefabricatedColors,
+    color,
+  } = props
+
+  const defaultHsva = useMemo(() => {
+    return hexToHsva(color ?? defaultColor)
+  }, [defaultColor, color])
+
+  const defaultInputValue = useMemo(() => {
+    return {
+      ...defaultHsva,
+      a: 1,
+    }
+  }, [defaultHsva])
+
+  const defaultAlphaInputValue = useMemo(() => {
+    return defaultHsva.a * 100 + "%"
+  }, [defaultHsva.a])
+
   const [hsva, setHsva] = useState<HsvaColor>(defaultHsva)
   const [currentVisible, setCurrentVisible] = useState(false)
-  const [inputValue, setInputValue] = useState(hsvaToHex(hsva))
-  const [alphaPercentValue, setAlphaPercentValue] = useState("100%")
+  const [inputValue, setInputValue] = useState(hsvaToHex(defaultInputValue))
+  const [alphaPercentValue, setAlphaPercentValue] = useState(
+    defaultAlphaInputValue,
+  )
 
-  const handleColorPick = useCallback((hsva: HsvaColor) => {
-    setHsva(hsva)
-    setAlphaPercentValue(updateAlphaInputValue(hsva.a))
+  const handleColorPick = useCallback(
+    (hsva: HsvaColor) => {
+      onColorChange?.(hsva)
+      setHsva(hsva)
+    },
+    [onColorChange],
+  )
+
+  useEffect(() => {
     setInputValue(hsvaToHex(hsva))
-    props.onColorChange && props.onColorChange(hsva)
-  }, [])
+    setAlphaPercentValue(hsva.a * 100 + "%")
+  }, [hsva])
 
   const [inputFocus, setInputFocus] = useState(false)
   const [debouncedInputFocus, setDebouncedInputFocus] = useState(false)
-
-  const inputRef = useRef<HTMLInputElement>(null)
-  const alphaInputRef = useRef<HTMLInputElement>(null)
 
   useDebounce(
     () => {
@@ -64,43 +86,43 @@ function ColorPicker(props: ColorPickerProps) {
   )
 
   return (
-    <div placeholder={props.placeholder} css={colorInputContainerCss}>
-      <span css={labelCss}>{labelName}</span>
+    <div placeholder={placeholder} css={colorInputContainerCss}>
       <div css={colorInputCss}>
         <Input
-          inputRef={inputRef}
           highlight={debouncedInputFocus}
           prefix={{
             render: (
               <div css={triggerCss}>
                 <Trigger
-                  colorScheme={"white"}
-                  trigger={"click"}
+                  colorScheme="white"
+                  trigger="click"
                   clickOutsideToClose
-                  withoutPadding={true}
+                  withoutPadding
                   popupVisible={currentVisible}
-                  position={"bottom"}
+                  position="bottom"
                   onVisibleChange={setCurrentVisible}
                   content={
                     <ColorPickerOperation
                       color={hsva}
-                      handleHueChange={props.onHueChange}
-                      handleAlphaChange={props.onAlphaChange}
-                      prefabricatedColors={props.prefabricatedColors}
+                      prefabricatedColors={prefabricatedColors}
                       handleColorPick={handleColorPick}
                       handleClosePanel={() => setCurrentVisible(false)}
                     />
                   }
                 >
-                  <div css={applyColorLumpCss(hsvaToRgba(hsva))} />
+                  <div css={applyColorLumpRadioStyle(hsvaToRgba(hsva))} />
                 </Trigger>
               </div>
             ),
             custom: true,
           }}
           requirePadding={false}
-          style={{ width: 146, height: 40, fontSize: 12 }}
-          borderColor={"purple"}
+          style={{
+            width: "100%",
+            height: 40,
+            fontSize: 12,
+          }}
+          borderColor="purple"
           value={inputValue}
           onChange={(value) => {
             setInputValue(value)
@@ -112,6 +134,7 @@ function ColorPicker(props: ColorPickerProps) {
           }}
           onBlur={() => {
             setInputFocus(false)
+            onColorChange?.(hsva)
             setInputValue(hsvaToHex(hsva))
           }}
           withoutNormalBorder={true}
@@ -121,7 +144,6 @@ function ColorPicker(props: ColorPickerProps) {
             render: (
               <input
                 style={{ fontSize: 12 }}
-                ref={alphaInputRef}
                 value={alphaPercentValue}
                 onChange={(event) => {
                   if (event.target && event.target.value.length > 0) {
@@ -142,12 +164,10 @@ function ColorPicker(props: ColorPickerProps) {
                   }
                   setAlphaPercentValue(event.target.value)
                 }}
-                onFocus={() => {
-                  setInputFocus(true)
-                }}
                 onBlur={() => {
                   setInputFocus(false)
                   setAlphaPercentValue(hsva.a * 100 + "%")
+                  onColorChange?.(hsva)
                 }}
                 css={percentInputCss}
               />

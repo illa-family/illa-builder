@@ -1,7 +1,8 @@
-import { FC } from "react"
+import { FC, useMemo } from "react"
 import { BaseInputSetterProps } from "./interface"
 import { applyInputSetterWrapperStyle } from "./style"
 import { CodeEditor } from "@/components/CodeEditor"
+import { VALIDATION_TYPES_TRANS } from "@/utils/validationFactory"
 
 function getPath(attrName?: string, widgetDisplayName?: string) {
   if (attrName && widgetDisplayName) {
@@ -20,19 +21,27 @@ export const BaseInput: FC<BaseInputSetterProps> = (props) => {
     expectedType,
     value,
     widgetDisplayName,
+    isInList,
   } = props
 
+  const _value = useMemo(() => {
+    if (typeof value === "object") {
+      return `{{${JSON.stringify(value)}}}`
+    } else {
+      return value
+    }
+  }, [value])
+
   return (
-    <div css={applyInputSetterWrapperStyle(isSetterSingleRow)}>
+    <div css={applyInputSetterWrapperStyle(isSetterSingleRow, isInList)}>
       <CodeEditor
-        value={value ?? ""}
+        value={_value ?? ""}
         placeholder={placeholder}
         onChange={(value) => {
           handleUpdateDsl(attrName, value)
         }}
         mode={"TEXT_JS"}
-        // @ts-ignore todo: weichen
-        expectedType={expectedType}
+        expectedType={VALIDATION_TYPES_TRANS[expectedType]}
         path={getPath(attrName, widgetDisplayName)}
       />
     </div>

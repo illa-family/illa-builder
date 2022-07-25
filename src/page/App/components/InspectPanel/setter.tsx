@@ -20,16 +20,39 @@ export const Setter: FC<PanelSetterProps> = (props) => {
     attrName,
     parentAttrName,
     expectedType,
+    defaultValue,
   } = props
   const Comp = getSetterByType(setterType)
 
-  const { widgetProps, handleUpdateDsl, widgetDisplayName } =
-    useContext(SelectedPanelContext)
+  const {
+    widgetProps,
+    handleUpdateDsl,
+    widgetDisplayName,
+    widgetType,
+    widgetOrAction,
+  } = useContext(SelectedPanelContext)
 
   const canRenderSetter = useMemo(() => {
     if (!bindAttrName || !shown) return true
-    const bindAttrNameValue = widgetProps[bindAttrName]
-    return shown(bindAttrNameValue)
+    let bindAttrNameValue
+    if (typeof bindAttrName === "string") {
+      if (parentAttrName) {
+        bindAttrNameValue = get(
+          widgetProps,
+          `${parentAttrName}.${bindAttrName}`,
+        )
+      } else {
+        bindAttrNameValue = get(widgetProps, bindAttrName)
+      }
+      return shown(bindAttrNameValue)
+    } else if (Array.isArray(bindAttrName)) {
+      const shownProps: { [attrName: string]: any } = {}
+      bindAttrName.forEach((_attrName: string) => {
+        shownProps[_attrName] = widgetProps[_attrName]
+      })
+      return shown(shownProps)
+    }
+    return true
   }, [shown, widgetProps, bindAttrName])
 
   const renderLabel = useMemo(() => {
@@ -68,6 +91,10 @@ export const Setter: FC<PanelSetterProps> = (props) => {
           handleUpdateDsl={handleUpdateDsl}
           widgetDisplayName={widgetDisplayName}
           expectedType={expectedType ?? VALIDATION_TYPES.STRING}
+          widgetType={widgetType}
+          parentAttrName={parentAttrName}
+          widgetOrAction={widgetOrAction}
+          defaultValue={defaultValue}
         />
       </div>
     ) : null

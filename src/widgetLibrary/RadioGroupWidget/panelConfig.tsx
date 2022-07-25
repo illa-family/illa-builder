@@ -1,8 +1,8 @@
 import { HorizontalStartIcon, HorizontalEndIcon } from "@illa-design/icon"
 import { PanelConfig } from "@/page/App/components/InspectPanel/interface"
 import { colorSchemeOptions } from "@/widgetLibrary/PublicSector/colorSchemeOptions"
-import i18n from "@/i18n/config"
 import { VALIDATION_TYPES } from "@/utils/validationFactory"
+import i18n from "@/i18n/config"
 
 export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
   {
@@ -34,20 +34,20 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
         childrenSetter: [
           {
             id: "radioGroup-options-label",
-            labelName: "Label",
+            labelName: i18n.t("Label"),
             attrName: "label",
             setterType: "INPUT_SETTER",
             expectedType: VALIDATION_TYPES.STRING,
           },
           {
             id: "radioGroup-options-value",
-            labelName: "Value",
+            labelName: i18n.t("Value"),
             attrName: "value",
             setterType: "INPUT_SETTER",
           },
           {
             id: "radioGroup-options-disabled",
-            labelName: "Disabled",
+            labelName: i18n.t("Disabled"),
             attrName: "disabled",
             setterType: "INPUT_SETTER",
             expectedType: VALIDATION_TYPES.BOOLEAN,
@@ -78,6 +78,7 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
             labelName: i18n.t("editor.inspect.setter_label.label"),
             attrName: "labels",
             setterType: "OPTION_MAPPED_INPUT_SETTER",
+            placeholder: "{{item}}",
             expectedType: VALIDATION_TYPES.ARRAY,
           },
           {
@@ -85,6 +86,7 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
             labelName: i18n.t("editor.inspect.setter_label.value"),
             attrName: "values",
             setterType: "OPTION_MAPPED_INPUT_SETTER",
+            placeholder: "{{item}}",
             expectedType: VALIDATION_TYPES.ARRAY,
           },
           {
@@ -92,6 +94,7 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
             labelName: i18n.t("editor.inspect.setter_label.disabled"),
             attrName: "disables",
             setterType: "OPTION_MAPPED_INPUT_SETTER",
+            placeholder: "{{false}}",
             expectedType: VALIDATION_TYPES.ARRAY,
           },
         ],
@@ -99,6 +102,9 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "radioGroup-basic-defaultValue",
         labelName: i18n.t("editor.inspect.setter_label.default_value"),
+        labelDesc: i18n.t(
+          "editor.inspect.setter_tooltip.component_default_value",
+        ),
         attrName: "value",
         setterType: "INPUT_SETTER",
       },
@@ -158,36 +164,13 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
     ],
   },
   {
-    id: "radioGroup-validation",
-    groupName: i18n.t("editor.inspect.setter_group.validation"),
-    children: [
-      {
-        id: "radioGroup-validation-required",
-        labelName: i18n.t("editor.inspect.setter_label.required_field"),
-        setterType: "DYNAMIC_SWITCH_SETTER",
-        expectedType: VALIDATION_TYPES.BOOLEAN,
-        useCustomLayout: true,
-        attrName: "required",
-      },
-      {
-        id: "radioGroup-validation-hide-message",
-        labelName: i18n.t(
-          "editor.inspect.setter_label.hide_validation_message",
-        ),
-        setterType: "DYNAMIC_SWITCH_SETTER",
-        expectedType: VALIDATION_TYPES.BOOLEAN,
-        useCustomLayout: true,
-        attrName: "hideValidationMessage",
-      },
-    ],
-  },
-  {
     id: "radioGroup-interaction",
     groupName: i18n.t("editor.inspect.setter_group.interaction"),
     children: [
       {
         id: "radioGroup-interaction-disabled",
         labelName: i18n.t("editor.inspect.setter_label.disabled"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.disabled"),
         attrName: "disabled",
         setterType: "INPUT_SETTER",
         placeholder: "{{false}}",
@@ -202,6 +185,7 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "radioGroup-adornments-tooltip",
         labelName: i18n.t("editor.inspect.setter_label.tooltip"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.tooltip"),
         attrName: "tooltipText",
         setterType: "INPUT_SETTER",
         expectedType: VALIDATION_TYPES.STRING,
@@ -215,17 +199,28 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "radioGroup-layout-hidden",
         labelName: i18n.t("editor.inspect.setter_label.hidden"),
-        setterType: "INPUT_SETTER",
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.hidden"),
+        setterType: "DYNAMIC_SWITCH_SETTER",
         attrName: "hidden",
         placeholder: "false",
+        useCustomLayout: true,
         expectedType: VALIDATION_TYPES.BOOLEAN,
       },
       {
         id: "radioGroup-style-direction",
-        labelName: i18n.t("editor.inspect.setter_label.label_alignment"),
+        labelName: i18n.t("editor.inspect.setter_label.group_layout"),
         setterType: "RADIO_GROUP_SETTER",
         attrName: "direction",
-        options: ["vertical", "horizontal"],
+        options: [
+          {
+            label: "horizontal",
+            value: "horizontal",
+          },
+          {
+            label: "vertical",
+            value: "vertical",
+          },
+        ],
       },
     ],
   },
@@ -244,7 +239,7 @@ export const RADIO_GROUP_PANEL_CONFIG: PanelConfig[] = [
             id: "radioGroup-style-color",
             labelName: i18n.t("editor.inspect.setter_label.theme_color"),
             attrName: "colorScheme",
-            setterType: "COLOR_SELECT_SETTER",
+            setterType: "COLOR_PICKER_SETTER",
             defaultValue: "blue",
             options: colorSchemeOptions,
           },

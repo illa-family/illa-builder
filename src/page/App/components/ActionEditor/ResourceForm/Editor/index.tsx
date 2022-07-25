@@ -22,8 +22,8 @@ import {
   formFooterFillingStyle,
   createResourceBtnStyle,
   formTitleStyle,
+  formBodyStyle,
 } from "./style"
-import { AxiosResponse } from "axios"
 
 const renderResourceNode = (
   resourceType: ResourceType | undefined,
@@ -156,7 +156,7 @@ export const ResourceFormEditor: FC<ResourceFormEditorProps> = (props) => {
       <div css={formTitleStyle}>
         {t("editor.action.form.title.configure", { name: resourceTitle })}
       </div>
-      <div>
+      <div css={formBodyStyle}>
         {renderResourceNode(
           resourceType,
           connectionRef,

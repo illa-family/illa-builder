@@ -1,13 +1,14 @@
 import { NumberInputWidgetIcon } from "@illa-design/icon"
 import { WidgetConfig } from "@/widgetLibrary/interface"
+import i18n from "@/i18n/config"
 
 export const NUMBER_INPUT_WIDGET_CONFIG: WidgetConfig = {
   type: "NUMBER_INPUT_WIDGET",
-  widgetName: "Number Input",
+  widgetName: i18n.t("widget.number_input.name"),
   displayName: "numberInput",
   icon: <NumberInputWidgetIcon size="100%" />,
   sessionType: "INPUTS",
-  w: 10,
+  w: 12,
   h: 5,
   defaults: {
     label: "Label",
@@ -17,5 +18,6 @@ export const NUMBER_INPUT_WIDGET_CONFIG: WidgetConfig = {
     colorScheme: "blue",
     max: "{{Infinity}}",
     min: "{{-Infinity}}",
+    hidden: false,
   },
 }

@@ -1,6 +1,6 @@
 import { PanelConfig } from "@/page/App/components/InspectPanel/interface"
-import i18n from "@/i18n/config"
 import { VALIDATION_TYPES } from "@/utils/validationFactory"
+import i18n from "@/i18n/config"
 
 export const IMAGE_PANEL_CONFIG: PanelConfig[] = [
   {
@@ -45,6 +45,7 @@ export const IMAGE_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "image-adornments-tooltip",
         labelName: i18n.t("editor.inspect.setter_label.tooltip"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.tooltip"),
         attrName: "tooltipText",
         expectedType: VALIDATION_TYPES.STRING,
         setterType: "INPUT_SETTER",
@@ -72,9 +73,11 @@ export const IMAGE_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "image-layout-hidden",
         labelName: i18n.t("editor.inspect.setter_label.hidden"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.hidden"),
         attrName: "hidden",
-        expectedType: VALIDATION_TYPES.STRING,
-        setterType: "INPUT_SETTER",
+        expectedType: VALIDATION_TYPES.BOOLEAN,
+        setterType: "DYNAMIC_SWITCH_SETTER",
+        useCustomLayout: true,
       },
     ],
   },

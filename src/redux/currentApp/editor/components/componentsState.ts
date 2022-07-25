@@ -29,20 +29,19 @@ export interface ComponentNode {
   }
 }
 
-export interface ComponentsState {
-  rootDsl: ComponentNode | null
-}
-
-export const ComponentsInitialState: ComponentsState = {
-  rootDsl: null,
-}
+export type ComponentsState = ComponentNode | null
+export const ComponentsInitialState: ComponentsState = null
 
 export interface DeleteComponentNodePayload {
-  displayName: string
-  parentDisplayName: string
+  displayNames: string[]
 }
 
 export interface UpdateComponentPropsPayload {
   displayName: string
   updateSlice: Record<string, any>
+}
+
+export interface ResetComponentPropsPayload {
+  displayName: string
+  resetSlice: Record<string, any>
 }

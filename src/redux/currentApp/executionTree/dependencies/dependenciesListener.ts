@@ -4,6 +4,12 @@ import { getAllComponentDisplayNameMapProps } from "@/redux/currentApp/editor/co
 import { dependenciesActions } from "@/redux/currentApp/executionTree/dependencies/dependenciesSlice"
 import { AppListenerEffectAPI, AppStartListening } from "@/store"
 import dependenciesTreeWorker from "@/utils/worker/exectionTreeWorker?worker"
+import { getBuilderInfo } from "@/redux/builderInfo/builderInfoSelector"
+import { getCurrentUser } from "@/redux/currentUser/currentUserSelector"
+import { getAllActionDisplayNameMapProps } from "@/redux/currentApp/action/actionSelector"
+import { configActions } from "@/redux/config/configSlice"
+import { actionActions } from "@/redux/currentApp/action/actionSlice"
+import { addActionItemReducer } from "@/redux/currentApp/action/actionReducer"
 
 export const worker = new dependenciesTreeWorker()
 
@@ -13,10 +19,16 @@ async function handleUpdateDependencies(
 ) {
   const rootState = listenerApi.getState()
   const displayNameMapProps = getAllComponentDisplayNameMapProps(rootState)
+  const displayNameMapActions = getAllActionDisplayNameMapProps(rootState)
+  const builderInfo = getBuilderInfo(rootState)
+  const currentUser = getCurrentUser(rootState)
   if (!displayNameMapProps) return
   worker.postMessage({
     action: "GENERATE_DEPENDENCIES",
     displayNameMapProps: displayNameMapProps,
+    builderInfo: builderInfo,
+    currentUser: currentUser,
+    displayNameMapActions,
   })
   worker.onmessage = (e) => {
     const { data } = e
@@ -33,6 +45,9 @@ export function setupDependenciesListeners(
       matcher: isAnyOf(
         componentsActions.updateComponentPropsReducer,
         componentsActions.deleteComponentNodeReducer,
+        configActions.updateSelectActionTemplate,
+        actionActions.updateActionTemplateReducer,
+        actionActions.addActionItemReducer,
       ),
       effect: handleUpdateDependencies,
     }),

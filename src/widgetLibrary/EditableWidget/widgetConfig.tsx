@@ -1,4 +1,4 @@
-import { EditableTextWidgetIcon, TextInputWidgetIcon } from "@illa-design/icon"
+import { EditableTextWidgetIcon } from "@illa-design/icon"
 import { WidgetConfig } from "@/widgetLibrary/interface"
 import i18n from "@/i18n/config"
 
@@ -16,5 +16,7 @@ export const EDITABLE_TEXT_WIDGET_CONFIG: WidgetConfig = {
     labelPosition: "left",
     labelWidth: "{{33}}",
     colorScheme: "blue",
+    hidden: false,
+    placeholder: "enter sth",
   },
 }

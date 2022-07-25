@@ -1,4 +1,4 @@
-import { FC, useState, useMemo, useRef } from "react"
+import { FC, useState, useMemo, useRef, useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { useSelector } from "react-redux"
 import { Button } from "@illa-design/button"
@@ -6,7 +6,7 @@ import { Trigger } from "@illa-design/trigger"
 import { DropList, Dropdown } from "@illa-design/dropdown"
 import { Input } from "@illa-design/input"
 import { illaPrefix, globalColor } from "@illa-design/theme"
-import { AddIcon, WarningCircleIcon, EmptyStateIcon } from "@illa-design/icon"
+import { AddIcon, WarningCircleIcon } from "@illa-design/icon"
 import { DisplayNameGenerator } from "@/utils/generators/generateDisplayName"
 import { selectAllActionItem } from "@/redux/currentApp/action/actionSelector"
 import { getSelectedAction } from "@/redux/config/configSelector"
@@ -15,6 +15,9 @@ import { ActionInfo } from "@/page/App/components/ActionEditor/ActionGenerator/i
 import { ActionTypeIcon } from "@/page/App/components/ActionEditor/components/ActionTypeIcon"
 import { isValidActionDisplayName } from "@/page/App/components/ActionEditor/utils"
 import { ActionDisplayNameValidateResult } from "@/page/App/components/ActionEditor/interface"
+import { ActionItem } from "@/redux/currentApp/action/actionState"
+import { SearchHeader } from "./SearchHeader"
+import { Runtime } from "./Runtime"
 import {
   actionListContainerStyle,
   newBtnContainerStyle,
@@ -31,8 +34,7 @@ import {
   nameErrorMsgStyle,
 } from "./style"
 import { ActionListProps } from "./interface"
-import { SearchHeader } from "./SearchHeader"
-import { ActionItem } from "@/redux/currentApp/action/actionState"
+import { ReactComponent as EmptySearchIcon } from "@/assets/empty-search-icon.svg"
 
 const DropListItem = DropList.Item
 
@@ -78,34 +80,40 @@ export const ActionList: FC<ActionListProps> = (props) => {
     }, 0)
   }
 
-  function updateName(originName: string) {
-    if (originName !== editingName && !isRenameError.error) {
-      onUpdateActionItem(editingActionItemId, {
-        ...activeActionItem,
-        displayName: editingName,
-        oldDisplayName: originName,
+  const updateName = useCallback(
+    (originName: string) => {
+      if (originName !== editingName && !isRenameError.error) {
+        onUpdateActionItem(editingActionItemId, {
+          ...activeActionItem,
+          displayName: editingName,
+          oldDisplayName: originName,
+        })
+      }
+      setEditingActionItemId("")
+      setIsRenameError({ error: false })
+      setEditingName("")
+    },
+    [onUpdateActionItem, editingActionItemId, editingName, isRenameError],
+  )
+
+  const onAddAction = useCallback(
+    (info: ActionInfo) => {
+      const { actionType, resourceId } = info
+
+      setActionGeneratorVisible(false)
+
+      onAddActionItem({
+        displayName: DisplayNameGenerator.getDisplayName(actionType),
+        actionType,
+        resourceId,
+        actionTemplate: {},
       })
-    }
-    setEditingActionItemId("")
-    setIsRenameError({ error: false })
-    setEditingName("")
-  }
+    },
+    [onAddActionItem],
+  )
 
   function onClickActionItem(id: string) {
     onSelectActionItem(id)
-  }
-
-  function onAddAction(info: ActionInfo) {
-    const { actionType, resourceId } = info
-
-    setActionGeneratorVisible(false)
-
-    onAddActionItem({
-      displayName: DisplayNameGenerator.getDisplayName(actionType),
-      actionType,
-      resourceId,
-      actionTemplate: {},
-    })
   }
 
   const actionItemsList = matchedActionItems.map((item) => {
@@ -173,18 +181,19 @@ export const ActionList: FC<ActionListProps> = (props) => {
           )}
         </span>
         {renderName()}
+        <Runtime actionItem={item} />
       </li>
     )
   })
 
   const NoMatchFound = (
     <div css={noMatchFoundWrapperStyle}>
-      <EmptyStateIcon size={"48px"} viewBox={"0 0 48 48"} />
+      <EmptySearchIcon />
       <span>{t("editor.action.action_list.tips.not_found")}</span>
     </div>
   )
 
-  const renderActionItemList = () => {
+  const finalActionItemList = useMemo(() => {
     if (matchedActionItems.length === 0) {
       if (query !== "") {
         return NoMatchFound
@@ -198,7 +207,41 @@ export const ActionList: FC<ActionListProps> = (props) => {
     }
 
     return actionItemsList
-  }
+  }, [
+    query,
+    matchedActionItems,
+    activeActionItem,
+    editingActionItemId,
+    isActionDirty,
+    editingName,
+    isRenameError,
+  ])
+
+  const handleContextMenu = useCallback(
+    (key) => {
+      switch (key) {
+        case "duplicate":
+          onDuplicateActionItem(contextMenuActionId)
+          break
+        case "delete":
+          onDeleteActionItem(contextMenuActionId)
+          break
+        case "rename":
+          const target = actionItems.find(
+            ({ actionId }) => actionId === contextMenuActionId,
+          ) as ActionItem
+          editName(target?.actionId, target?.displayName)
+          break
+      }
+    },
+    [
+      onDuplicateActionItem,
+      onDeleteActionItem,
+      editName,
+      contextMenuActionId,
+      actionItems,
+    ],
+  )
 
   return (
     <div css={actionListContainerStyle}>
@@ -224,26 +267,9 @@ export const ActionList: FC<ActionListProps> = (props) => {
 
       <Dropdown
         trigger="contextmenu"
+        triggerProps={{ position: "br" }}
         dropList={
-          <DropList
-            width={"184px"}
-            onClickItem={(key) => {
-              switch (key) {
-                case "duplicate":
-                  onDuplicateActionItem(contextMenuActionId)
-                  break
-                case "delete":
-                  onDeleteActionItem(contextMenuActionId)
-                  break
-                case "rename":
-                  const target = actionItems.find(
-                    ({ actionId }) => actionId === contextMenuActionId,
-                  ) as ActionItem
-                  editName(target?.actionId, target?.displayName)
-                  break
-              }
-            }}
-          >
+          <DropList width={"184px"} onClickItem={handleContextMenu}>
             <DropListItem
               key={"rename"}
               title={t("editor.action.action_list.contextMenu.rename")}
@@ -260,7 +286,7 @@ export const ActionList: FC<ActionListProps> = (props) => {
           </DropList>
         }
       >
-        <ul css={actionItemListStyle}>{renderActionItemList()}</ul>
+        <ul css={actionItemListStyle}>{finalActionItemList}</ul>
       </Dropdown>
 
       <ActionGenerator

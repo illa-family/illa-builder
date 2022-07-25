@@ -1,7 +1,5 @@
-import { ButtonProps } from "@illa-design/button/src"
-import { TooltipWrapperProps } from "@/widgetLibrary/PublicSector/TooltipWrapper/interface"
-
-export type alignmentType = "start" | "center" | "end" | "fullWidth"
+import { BaseWidgetProps } from "@/widgetLibrary/interface"
+import { ButtonProps } from "@illa-design/button"
 
 export interface WrappedButtonProps
   extends Pick<
@@ -14,11 +12,15 @@ export interface WrappedButtonProps
     | "borderColor"
     | "backgroundColor"
     | "textColor"
-    | "colorScheme"
   > {
   text?: string
   submit?: boolean
   submitTargetId?: string
-  alignment?: alignmentType
   borderRadius?: string
+  handleOnClick: () => void
+  colorScheme?: string
+}
+
+export interface ButtonWidgetProps extends WrappedButtonProps, BaseWidgetProps {
+  handleOnclick: () => void
 }

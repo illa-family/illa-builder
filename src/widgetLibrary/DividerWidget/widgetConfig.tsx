@@ -8,10 +8,11 @@ export const DIVIDER_WIDGET_CONFIG: WidgetConfig = {
   widgetName: i18n.t("widget.divider_progress.name"),
   icon: <DividerWidgetIcon size="100%" />,
   sessionType: "PRESENTATION",
-  w: 30,
+  w: 16,
   h: 5,
   defaults: {
     colorScheme: "grayBlue",
     textSize: "14px",
+    hidden: false,
   },
 }

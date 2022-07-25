@@ -22,28 +22,23 @@ export const fieldItemKeyStyle = css`
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
-
-  & .CodeMirror:not(.CodeMirror-focused) {
-    border-right: 0;
-  }
 `
 
 export const fieldItemTypeStyle = css`
   width: 120px !important;
   border-radius: 0 !important;
-  border-right: 0 !important;
-
-  & > div {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
 `
 
 export const fieldItemValueStyle = css`
   flex: 1;
+  overflow: hidden;
 
   & .CodeMirror {
     border-radius: 0;
+  }
+
+  & .CodeMirror:not(.CodeMirror-focused) {
+    border-left: 0;
   }
 `
 

@@ -1,6 +1,5 @@
 import { css, SerializedStyles } from "@emotion/react"
 import { globalColor, illaPrefix } from "@illa-design/theme"
-import { Variants } from "framer-motion"
 
 export const publicPaddingStyle = css`
   padding: 0 16px;
@@ -43,6 +42,14 @@ export function applyLabelTipsStyle(
   `
 }
 
+export const labelTipsTextStyle = css`
+  & > strong {
+    padding: 0 4px;
+    border-raidus: 4px;
+    background: ${globalColor(`--${illaPrefix}-gray-03`)};
+  }
+`
+
 export const panelHeaderWrapperStyle = css`
   display: flex;
   width: 100%;
@@ -74,7 +81,7 @@ export function applySetterWrapperStyle(
 
   const basicStyle = css`
     display: flex;
-    align-items: baseline;
+    align-items: ${isInList ? "center" : "baseline"};
     justify-content: space-between;
   `
   return css`
@@ -98,8 +105,6 @@ export const unselectedTipIconStyle = css`
 
 export const unselectedTipTextStyle = css`
   margin-top: 4px;
-  font-size: 14px;
-  color: ${globalColor(`--${illaPrefix}-grayBlue-04`)};
 `
 
 export const singleSelectedPanelWrapperStyle = css`
@@ -127,6 +132,8 @@ export const applySetterPublicWrapperStyle = (
   return isInList
     ? css`
         min-height: 40px;
+        display: flex;
+        align-items: center;
         ${widthStyle}
       `
     : css`

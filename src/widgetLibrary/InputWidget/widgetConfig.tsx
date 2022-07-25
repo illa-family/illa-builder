@@ -8,7 +8,7 @@ export const INPUT_WIDGET_CONFIG: WidgetConfig = {
   widgetName: i18n.t("widget.input.name"),
   icon: <TextInputWidgetIcon size="100%" />,
   sessionType: "INPUTS",
-  w: 10,
+  w: 12,
   h: 5,
   defaults: {
     label: "Label",
@@ -16,5 +16,6 @@ export const INPUT_WIDGET_CONFIG: WidgetConfig = {
     labelPosition: "left",
     labelWidth: "{{33}}",
     colorScheme: "blue",
+    hidden: false,
   },
 }

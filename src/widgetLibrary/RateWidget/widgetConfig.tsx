@@ -8,10 +8,10 @@ export const RATE_WIDGET_CONFIG: WidgetConfig = {
   widgetName: i18n.t("widget.rate.name"),
   icon: <RateWidgetIcon size="100%" />,
   sessionType: "PRESENTATION",
-  w: 10,
+  w: 12,
   h: 5,
   defaults: {
-    defaultValue: "{{4.5}}",
+    value: "{{4}}",
     allowHalf: true,
     maxCount: "{{5}}",
     icon: "star",
@@ -19,5 +19,6 @@ export const RATE_WIDGET_CONFIG: WidgetConfig = {
     labelAlign: "left",
     labelPosition: "left",
     labelWidth: "{{33}}",
+    hidden: false,
   },
 }

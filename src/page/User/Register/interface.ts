@@ -1,5 +1,5 @@
 export interface RegisterFields {
-  username: string
+  nickname: string
   email: string
   verificationCode: string
   password: string
@@ -7,8 +7,8 @@ export interface RegisterFields {
 }
 
 export interface RegisterResult {
-  userId: string
-  username: string
+  userId: number
+  nickname: string
   email: string
   createdAt: string
 }

@@ -3,6 +3,7 @@
   "preview": "Preview",
   "exit_preview": "Exit Preview",
   "edit": "Edit",
+  "edit_at": "Edited at",
   "title": "Welcome to illa",
   "description": {
     "part1": "This is an example without namespaces."
@@ -24,6 +25,7 @@
   },
   "back": "back",
   "edit_success": "edit success！",
+  "save": "Save",
   "user": {
     "description": "An open-source low-code Platform for Developers.",
     "sign_up": {
@@ -39,6 +41,7 @@
         "create": "Create Account"
       },
       "description": {
+        "login": "Already have an account? <0>Sign in</0>",
         "policy": "By clicking Create account, I agree to <0>Privacy Policy</0> and <1>terms</1>",
         "subscribe": "I am willing to receive the updates and news about ILLA"
       },
@@ -154,9 +157,9 @@
   "editor": {
     "action": {
       "type": {
-        "database": "Databases",
-        "api": "Apis",
-        "js_transformer": "Javascript Transformer"
+        "database": "Database",
+        "api": "API",
+        "js_transformer": "JavaScript Transformer"
       },
       "action_list": {
         "title": "Action List",
@@ -166,10 +169,6 @@
         "btn": {
           "new": "New",
           "close": "close"
-        },
-        "menu": {
-          "resource_action": "Resource action",
-          "javascript_transformer": "JavaScript transformer"
         },
         "contextMenu": {
           "delete": "Delete",
@@ -184,12 +183,34 @@
           "confirm_switch": "You did not save your query. Are you sure you want to discard changes?",
           "name_already_exist": "Already exists",
           "please_input_name": "Please input name",
-          "valid_name": "Can only contain letters, numbers, '_' or '$', start with '_' or a letter"
+          "valid_name": "Can only contain letters, numbers, '_' or '$', start with '_' or a letter",
+          "load_action_list_fail": "Get Action list fail: {{message}}",
+          "load_resource_fail": "Get resource list fail: {{message}}"
         },
         "action_generator": {
           "selector": {
             "title": "Select action type"
+          },
+          "title": {
+            "choose_resource": "Choose a resource "
+          },
+          "btns": {
+            "back": "Back",
+            "new_resource": "New Resource",
+            "create_action": "Create Action"
           }
+        },
+        "runtime": {
+          "total": "Total",
+          "prepare_query": "Prepare query",
+          "backend": "Backend",
+          "execute_resource": "execute resource",
+          "transfer_data": "transfer data",
+          "frontend": "Frontend",
+          "handle_response": "handle response",
+          "transformer": "transformer",
+          "post_processing": "post processing",
+          "response_size": "Response size"
         }
       },
       "panel": {
@@ -199,8 +220,7 @@
             "on_change": "Run action automatically when inputs change"
           },
           "resource": {
-            "new": "Create a new resource",
-            "rest_query": "RESTQuery(restapi)"
+            "new": "Create a new resource"
           }
         },
         "btn": {
@@ -263,6 +283,9 @@
         },
         "my_sql": {
           "name": "MySQL",
+          "title": {
+            "advanced_option": "Advanced Options"
+          },
           "label": {
             "name": "Name",
             "hostname_port": "Hostname/Port",
@@ -335,12 +358,14 @@
           },
           "tip": {
             "get_req_auto_run": "(GET REQ) WILL RUN AUTOMATICALLY WHENEVER A PARAMETER CHANGES.",
-            "name": "The name for resource when creating queries in the ILLA.",
+            "name": "The name for resource when creating actions in the ILLA.",
             "extra_body_values": "Extra body values are not passed for GET or HEAD requests",
             "configure_oauth2": "OAuth 2.0 is a complex spec. ILLA currently supports the server-side OAuth 2.0 authentication flow as well as the Client Credentials flow. In both cases, you must use the OAUTH2_TOKEN placeholder in order to inform ILLA where to place the OAuth access token in the API request. A common location for this is as a header such as Authorization: Bearer OAUTH2_TOKEN."
           },
           "placeholder": {
             "name": "i.e.\"Users DB(readonly)\" or \"Internal Admin API\"",
+            "api": "i.e.\"Internal Admin API\"",
+            "database": "i.e.\"Users DB(readonly)\"",
             "action_url_path_with_base_url": "api/v2/endpoint.json",
             "action_url_path": "http://www.api.com/api/v2/endpoint.json",
             "base_url": "Use the absolute URL (e.g https://example.com)",
@@ -360,6 +385,9 @@
               "bearer": "Bearer",
               "oauth2": "OAuth 2.0"
             }
+          },
+          "btns": {
+            "new": "New"
           }
         },
         "postgres": {
@@ -395,7 +423,8 @@
         "data": "Data",
         "container": "Container and form",
         "navigation": "Navigation"
-      }
+      },
+      "empty_tip": "Sorry, No search result"
     },
     "inspect": {
       "tab_title": "Inspect",
@@ -486,6 +515,8 @@
         "pending": "Pending",
         "event_handler": "Event handler",
         "event": "Event",
+        "component": "Component",
+        "method": "Method",
         "action": "Action",
         "trigger_query": "Trigger query",
         "control_component": "Control component",
@@ -496,10 +527,49 @@
         "text_align": "Text align",
         "text_size": "Text size",
         "start_date": "Start date",
-        "end_data": "End date"
+        "end_data": "End date",
+        "group_layout": "Group layout",
+        "config_type": "Config type",
+        "data_source": "Data source",
+        "chart_type": "Chart type",
+        "x_values": "X-axis Values",
+        "group_by": "Group by",
+        "datasets": "Datasets",
+        "dataset_config": "Dataset config",
+        "title": "Title",
+        "x_axis_title": "X-axis title",
+        "x_axis_type": "X-axis type",
+        "y_axis_title": "Y-axis title",
+        "legend_position": "Legend position",
+        "only_run_when": "Only run when",
+        "dataset": {
+          "name": "Dataset name",
+          "value": "Dataset values",
+          "remove": "Remove dataset"
+        }
+      },
+      "setter_tooltip": {
+        "text_value": "You can choose to enter value either in Markdown mode or Plain text mode. Only links in markdown mode can be recognized",
+        "tooltip": "User can enter component tooltip here. The tooltip will be shown when it is focused. Markdown format is supported.",
+        "hidden": "Dynamically control whether the component is hidden. You can also change the hidden status through <strong>{{ name }}.hidden</strong>",
+        "read_only": "Control the status of whether the component is read only. A read only component can be selected and focused but cannont be modified.",
+        "disabled": "Control the status of whether the component is disabled. The component cannot be modified or focused when it is disabled.",
+        "action": "Your actions to components trigger queries, control components, or call the data in your resources. Multiple async actions will be executed in parallel.",
+        "hide_validation_message": "You can hide the error message by switching the hidden status when the input value is incorrect. You can dynamically change the hidden status by JavaScript.",
+        "custom_rule": "Create your validation logic here. The rules should be made in JavaScript and covered by {{}}.",
+        "required_field": "Valid only when the switch is on.",
+        "input_default_value": "The initial value of the input box. You can dynamically change the initial value of the input field by typing JavaScript in {{}}.",
+        "placeholder": "The value will be shown when the input field is empty.",
+        "switch_default_value": "Set the initial status of the switch. You can dynamically change the default value by JavaScript.",
+        "component_default_value": "The initial value of the component. You can dynamically change the initial value by typing JavaScript in {{}}.",
+        "map_data_option": "Use either an array of values or an object of keys mapped to arrays. Each item in your data source is mapped to each option",
+        "date_format": "A valid date format string. See [dayJS](https://day.js.org/docs/en/parse/string-format)",
+        "loading": "Whether the component should show a loading indicator.",
+        "progress_percentage": "The percentage value is between 0 and 100",
+        "timeline_direction": "Change the direction of the timeline."
       },
       "setter_default_value": {
-        "solid": "Solid",
+        "fill": "Fill",
         "outline": "Outline"
       },
       "setter_content": {
@@ -512,6 +582,15 @@
         },
         "list_setter": {
           "reset": "Reset"
+        },
+        "event_handler_list": {
+          "empty": "Trigger queries, control components, or call other APIs in response to component events.",
+          "new": "New",
+          "title": "Edit event handler"
+        },
+        "color_picker": {
+          "title": "Edit color",
+          "prefabricated": "Prefabricated color"
         }
       }
     },
@@ -521,6 +600,17 @@
     },
     "deploy": {
       "fail": "Deploy fail"
+    },
+    "component": {
+      "delete": "Delete",
+      "delete_title": "Are you sure you want to delete {{ displayName}}?",
+      "delete_content": "Delete it maybe make some bugs，please confirm.",
+      "cancel": "Cancel"
+    },
+    "data_work_space": {
+      "actions_title": "ACTIONS & TRANSFORMERS ",
+      "components_title": "COMPONENTS ",
+      "globals_title": "GLOBALS "
     }
   },
   "widget": {
@@ -563,13 +653,28 @@
       "name": "Rate"
     },
     "date_time": {
-      "name": "Datetime"
+      "name": "Date Time"
     },
     "divider_progress": {
       "name": "Divider"
     },
     "editable_text": {
       "name": "Editable Text"
+    },
+    "check_box_group": {
+      "name": "Checkbox Group"
+    },
+    "number_input": {
+      "name": "Number Input"
+    },
+    "radio_button": {
+      "name": "Radio Button"
+    },
+    "timeline": {
+      "name": "Timeline"
+    },
+    "chart": {
+      "name": "Chart"
     }
   },
   "Setting": "Setting",
@@ -589,6 +694,7 @@
     "app": {
       "all_apps": "All Apps",
       "create_app": "Create App",
+      "rename_app": "Rename App",
       "rename_fail": "Rename fail",
       "duplicate_fail": "Duplicate fail",
       "duplicate_placeholder": "Enter your app name here",
@@ -625,16 +731,28 @@
       "title": "PASSWORD",
       "current_password": "Old password",
       "new_password": "New password",
-      "confirm_password": "Confirm password",
+      "confirm_password": "Confirmation password",
       "empty_password": "Please enter your password",
-      "error_format_password": "Password must be 6～15 characters",
-      "error_match_password": "Passwords do not match",
+      "error_format_password": "Password must be 6～20 characters",
+      "error_match_password": "Your password and confirmation password do not match",
+      "error_password_has_empty": "Password cannot include spaces",
+      "error_validate_password": "Your password can only contain numbers, letters and punctuations",
       "submit_button": "Submit"
     },
     "other": {
       "title": "SETTING",
       "language": "Language",
       "save": "Save Changes"
+    }
+  },
+  "status": {
+    "back": "Back to homepage",
+    "404": {
+      "des": "It seems that the page you were looking for could not be found.",
+      "again": "Refresh"
+    },
+    "500": {
+      "des": "Oops, something went wrong. Please try again later."
     }
   }
 }

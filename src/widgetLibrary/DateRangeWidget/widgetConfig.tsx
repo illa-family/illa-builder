@@ -8,7 +8,7 @@ export const DATE_RANGE_WIDGET_CONFIG: WidgetConfig = {
   widgetName: i18n.t("widget.date_range.name"),
   icon: <DateRangeWidgetIcon size="100%" />,
   sessionType: "CALENDAR",
-  w: 25,
+  w: 16,
   h: 5,
   defaults: {
     dateFormat: "YYYY-MM-DD",
@@ -20,5 +20,6 @@ export const DATE_RANGE_WIDGET_CONFIG: WidgetConfig = {
     labelAlign: "left",
     labelPosition: "left",
     labelWidth: "{{33}}",
+    hidden: false,
   },
 }

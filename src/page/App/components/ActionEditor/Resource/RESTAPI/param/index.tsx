@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect, useState, useCallback } from "react"
 import { css } from "@emotion/react"
 import { useTranslation } from "react-i18next"
 import { Select } from "@illa-design/select"
@@ -25,6 +25,7 @@ import {
   RESTAPIParamProps,
   RESTAPIConfigureValues,
   RESTAPIParamValues,
+  ContentType,
 } from "@/page/App/components/ActionEditor/Resource/RESTAPI/interface"
 import {
   concatParam,
@@ -66,9 +67,11 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
 
   const [params, setParams] = useState({
     method: config?.method ?? "GET",
-    url: config?.url ?? "",
+    url: (baseURL ? config?.url?.split(`${baseURL}/`)[1] : config?.url) ?? "",
     urlParams: initArrayField(config?.urlParams),
+    fullURL: config?.url ?? "",
     headers: initArrayField(config?.headers),
+    bodyType: config?.bodyType,
     body: config?.body,
     cookies: initArrayField(config?.cookies),
   })
@@ -79,9 +82,15 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
     // remove `_key` when update
     onChange?.({
       ...params,
+      // TODO: handle baseURL, should not save to url
+      url: baseURL ? `${baseURL}/${params.url}` : params.url,
       urlParams: excludeKeyAndEmptyFieldFromData(params.urlParams),
       headers: excludeKeyAndEmptyFieldFromData(params.headers),
       cookies: excludeKeyAndEmptyFieldFromData(params.cookies),
+      body:
+        typeof params.body === "object"
+          ? excludeKeyAndEmptyFieldFromData(params.body)
+          : params.body,
     })
   }, 200)
 
@@ -141,6 +150,24 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
     })
   }
 
+  const onChangeBodyType = useCallback((bodyType: ContentType) => {
+    setParams((prev) => {
+      return {
+        ...prev,
+        bodyType,
+      }
+    })
+  }, [])
+
+  const onChangeBodyValue = useCallback((value) => {
+    setParams((prev) => {
+      return {
+        ...prev,
+        body: value,
+      }
+    })
+  }, [])
+
   return (
     <div css={configContainerStyle}>
       <div
@@ -174,7 +201,7 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
                 })
               }}
               options={["GET", "POST", "PUT", "DELETE", "PATCH"]}
-              size="small"
+              size="medium"
               colorScheme="techPurple"
             />
             <Input
@@ -197,7 +224,7 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
                     )
               }
               borderColor="techPurple"
-              addonBefore={{ render: baseURL ?? null }}
+              addonBefore={{ render: baseURL ? `${baseURL}/` : null }}
             />
           </div>
           <dd css={descriptionStyle}>
@@ -331,7 +358,12 @@ export const RESTAPIParam: FC<RESTAPIParamProps> = (props) => {
           >
             {t("editor.action.resource.rest_api.label.body")}
           </label>
-          <Body value={params.body} />
+          <Body
+            value={params.body}
+            bodyType={params.bodyType}
+            onChangeBodyType={onChangeBodyType}
+            onChangeValue={onChangeBodyValue}
+          />
         </div>
       )}
 

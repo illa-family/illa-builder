@@ -8,11 +8,10 @@ export const CIRCLE_PROGRESS_WIDGET_CONFIG: WidgetConfig = {
   widgetName: i18n.t("widget.circle_progress.name"),
   icon: <CircleProgressWidgetIcon size="100%" />,
   sessionType: "PRESENTATION",
-  w: 10,
-  h: 10,
+  w: 6,
+  h: 12,
   defaults: {
     value: "50",
-    hidden: "false",
     alignment: "center",
     color: "blue",
     trailColor: "gray",

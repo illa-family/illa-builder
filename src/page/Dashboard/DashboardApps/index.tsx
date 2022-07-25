@@ -1,13 +1,14 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect, useState, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import { cloneDeep } from "lodash"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import copy from "copy-to-clipboard"
 import { Button } from "@illa-design/button"
 import { List, ListItem, ListItemMeta } from "@illa-design/list"
-import { CloseIcon, MoreIcon } from "@illa-design/icon"
+import { MoreIcon } from "@illa-design/icon"
 import { Divider } from "@illa-design/divider"
 import { Empty } from "@illa-design/empty"
 import { Message } from "@illa-design/message"
@@ -20,7 +21,6 @@ import { DashboardItemMenu } from "@/page/Dashboard/components/DashboardItemMenu
 import { getDashboardApps } from "@/redux/dashboard/apps/dashboardAppSelector"
 import { dashboardAppActions } from "@/redux/dashboard/apps/dashboardAppSlice"
 import { modalStyle } from "@/page/Dashboard/components/DashboardItemMenu/style"
-import { dashboardCloseIconStyle } from "@/page/Dashboard/style"
 import {
   appsContainerStyle,
   editButtonStyle,
@@ -28,7 +28,6 @@ import {
   itemExtraContainerStyle,
   itemMenuButtonStyle,
   listItemStyle,
-  listItemTitleStyle,
   listTitleContainerStyle,
   listTitleStyle,
   menuButtonStyle,
@@ -113,13 +112,15 @@ export const DashboardApps: FC = () => {
   const duplicateRequest = () => {
     Api.request<DashboardApp>(
       {
-        url: `/apps/${appsList[currentAppIdx].appId}/duplicate`,
+        url: `/apps/${appsList[currentAppIdx].appId}/duplication`,
         method: "POST",
+        data: {
+          appName: duplicateValue,
+        },
       },
       (response) => {
         dispatch(
           dashboardAppActions.addDashboardAppReducer({
-            index: currentAppIdx,
             app: response.data,
           }),
         )
@@ -155,7 +156,7 @@ export const DashboardApps: FC = () => {
             app: response.data,
           }),
         )
-        navigate(`/app/${response.data.appId}`)
+        navigate(`/app/${response.data.appId}/version/0`)
       },
       (failure) => {},
       (error) => {},
@@ -170,6 +171,16 @@ export const DashboardApps: FC = () => {
     )
   }
 
+  const sortedAppsList = useMemo(() => {
+    if (Array.isArray(appsList) && appsList.length > 0) {
+      const tmpAppList = cloneDeep(appsList)
+      return tmpAppList.sort((a, b) => {
+        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      })
+    }
+    return []
+  }, [appsList])
+
   return (
     <>
       <div css={appsContainerStyle}>
@@ -178,7 +189,7 @@ export const DashboardApps: FC = () => {
           <Button
             colorScheme="gray"
             onClick={() => {
-              copy(`${location.protocol}//${location.host}/user/login`)
+              copy(`${location.protocol}//${location.host}/dashboard/apps`)
               Message.success({ content: t("link_copied") })
             }}
           >
@@ -195,10 +206,10 @@ export const DashboardApps: FC = () => {
           </Button>
         </div>
         <Divider direction="horizontal" />
-        {appsList.length !== 0 && (
+        {sortedAppsList.length !== 0 && (
           <List
             size="medium"
-            data={appsList}
+            data={sortedAppsList}
             bordered={false}
             hoverable={true}
             renderRaw
@@ -211,9 +222,7 @@ export const DashboardApps: FC = () => {
                       <Button
                         colorScheme="techPurple"
                         onClick={() => {
-                          navigate(
-                            `/app/${item.appId}/version/${item.currentVersionId}`,
-                          )
+                          navigate(`/app/${item.appId}/version/0`)
                         }}
                         _css={editButtonStyle}
                         title="editButton"
@@ -245,14 +254,12 @@ export const DashboardApps: FC = () => {
                 >
                   <ListItemMeta
                     css={hoverableStyle}
-                    title={<span css={listItemTitleStyle}>{item.appName}</span>}
-                    description={`${item.updatedBy} ${dayjs
+                    title={item.appName}
+                    description={`${item.updatedBy} ${t("edit_at")} ${dayjs
                       .utc(item.updatedAt)
                       .format("YYYY-MM-DD HH:mm:ss")}`}
                     onClick={() => {
-                      navigate(
-                        `/app/${item.appId}/version/${item.currentVersionId}`,
-                      )
+                      navigate(`/app/${item.appId}/version/0`)
                     }}
                   />
                 </ListItem>
@@ -275,11 +282,6 @@ export const DashboardApps: FC = () => {
         okButtonProps={{
           colorScheme: "techPurple",
         }}
-        closeElement={
-          <div css={dashboardCloseIconStyle}>
-            <CloseIcon />
-          </div>
-        }
         visible={createNewVisible}
         confirmLoading={createLoading}
         onCancel={() => {
@@ -292,8 +294,9 @@ export const DashboardApps: FC = () => {
           }
           createNewRequest()
         }}
+        title={t("dashboard.app.create_app")}
+        okText={t("save")}
       >
-        <div css={modalTitleStyle}>{t("dashboard.app.create_app")}</div>
         <Input
           css={modalInputStyle}
           onChange={(res) => {
@@ -309,19 +312,16 @@ export const DashboardApps: FC = () => {
           autoFocus={false}
           footerAlign="right"
           visible={renameModalVisible}
+          title={t("dashboard.app.rename_app")}
           _css={modalStyle}
           okButtonProps={{
             colorScheme: "techPurple",
           }}
-          closeElement={
-            <div css={dashboardCloseIconStyle}>
-              <CloseIcon />
-            </div>
-          }
           confirmLoading={renameModalLoading}
           onCancel={() => {
             setRenameModalVisible(false)
           }}
+          okText={t("save")}
           onOk={() => {
             if (!renameValue) {
               Message.error(t("dashboard.app.name_empty"))
@@ -330,7 +330,6 @@ export const DashboardApps: FC = () => {
             renameRequest()
           }}
         >
-          <div css={modalTitleStyle}>{t("dashboard.app.create_app")}</div>
           <Input
             css={modalInputStyle}
             onChange={(res) => {
@@ -352,11 +351,6 @@ export const DashboardApps: FC = () => {
           okButtonProps={{
             colorScheme: "techPurple",
           }}
-          closeElement={
-            <div css={dashboardCloseIconStyle}>
-              <CloseIcon />
-            </div>
-          }
           confirmLoading={duplicateModalLoading}
           onCancel={() => {
             setDuplicateModalVisible(false)
@@ -370,14 +364,11 @@ export const DashboardApps: FC = () => {
               Message.error(t("dashboard.app.name_existed"))
               return
             }
-
-            // TODO: @zch unique name
             duplicateRequest()
           }}
+          title={`${t("duplicate")} "${appsList[currentAppIdx].appName}"`}
+          okText={t("save")}
         >
-          <div css={modalTitleStyle}>
-            {`${t("duplicate")} '${appsList[currentAppIdx].appName}'`}
-          </div>
           <Input
             css={modalInputStyle}
             onChange={(res) => {

@@ -1,6 +1,6 @@
 import { FC, useState } from "react"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
+import { useTranslation, Trans } from "react-i18next"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Input, Password } from "@illa-design/input"
 import { Checkbox } from "@illa-design/checkbox"
@@ -21,12 +21,14 @@ import {
   errorMsgStyle,
   errorIconStyle,
   checkboxTextStyle,
+  descriptionStyle,
 } from "@/page/User/style"
 import { RegisterFields, RegisterResult } from "./interface"
 import { useDispatch } from "react-redux"
 import { currentUserActions } from "@/redux/currentUser/currentUserSlice"
 import { LocationState } from "@/page/User/Login/interface"
 import { setLocalStorage } from "@/utils/storage"
+import { TextLink } from "@/page/User/components/TextLink"
 
 export const Register: FC = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -56,7 +58,7 @@ export const Register: FC = () => {
         url: "/auth/signup",
         data: {
           verificationToken,
-          language: window.navigator.language === "zh-CN" ? "zh-cn" : "en-us",
+          language: window.navigator.language,
           ...data,
         },
       },
@@ -67,7 +69,7 @@ export const Register: FC = () => {
         dispatch(
           currentUserActions.updateCurrentUserReducer({
             userId: res.data.userId,
-            username: res.data.username,
+            nickname: res.data.nickname,
             language: "English",
             userAvatar: "",
             email: res.data.email,
@@ -108,7 +110,22 @@ export const Register: FC = () => {
   }
   return (
     <form css={gridFormStyle} onSubmit={handleSubmit(onSubmit)}>
-      <header css={formTitleStyle}>{t("user.sign_up.title")}</header>
+      <header css={gridItemStyle}>
+        <div css={formTitleStyle}>{t("user.sign_up.title")}</div>
+        <div css={descriptionStyle}>
+          <Trans
+            i18nKey="user.sign_up.description.login"
+            t={t}
+            components={[
+              <TextLink
+                onClick={() => {
+                  navigate("/user/login")
+                }}
+              />,
+            ]}
+          />
+        </div>
+      </header>
       <section css={gridFormFieldStyle}>
         <section css={gridItemStyle}>
           <label css={formLabelStyle}>
@@ -116,14 +133,14 @@ export const Register: FC = () => {
           </label>
           <div css={gridValidStyle}>
             <Controller
-              name="username"
+              name="nickname"
               control={control}
               render={({ field }) => (
                 <Input
                   {...field}
                   borderColor="techPurple"
                   size="large"
-                  error={!!errors.username}
+                  error={!!errors.nickname}
                   variant="fill"
                   placeholder={t("user.sign_up.placeholder.username")}
                 />
@@ -140,10 +157,10 @@ export const Register: FC = () => {
                 },
               }}
             />
-            {errors.username && (
+            {errors.nickname && (
               <div css={errorMsgStyle}>
                 <WarningCircleIcon css={errorIconStyle} />
-                {errors.username.message}
+                {errors.nickname.message}
               </div>
             )}
           </div>
@@ -306,6 +323,11 @@ export const Register: FC = () => {
                 minLength: {
                   value: 6,
                   message: t("user.sign_up.error_message.password.length"),
+                },
+                validate: (value) => {
+                  return value.includes(" ")
+                    ? t("setting.password.error_password_has_empty")
+                    : true
                 },
               }}
             />

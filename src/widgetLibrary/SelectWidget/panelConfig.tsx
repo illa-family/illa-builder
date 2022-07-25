@@ -1,8 +1,8 @@
 import { HorizontalStartIcon, HorizontalEndIcon } from "@illa-design/icon"
 import { PanelConfig } from "@/page/App/components/InspectPanel/interface"
-import i18n from "@/i18n/config"
 import { colorSchemeOptions } from "@/widgetLibrary/PublicSector/colorSchemeOptions"
 import { VALIDATION_TYPES } from "@/utils/validationFactory"
+import i18n from "@/i18n/config"
 
 export const SELECT_PANEL_CONFIG: PanelConfig[] = [
   {
@@ -34,20 +34,20 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
         childrenSetter: [
           {
             id: "select-options-label",
-            labelName: "Label",
+            labelName: i18n.t("Label"),
             attrName: "label",
             setterType: "INPUT_SETTER",
             expectedType: VALIDATION_TYPES.STRING,
           },
           {
             id: "select-options-value",
-            labelName: "Value",
+            labelName: i18n.t("Value"),
             attrName: "value",
             setterType: "INPUT_SETTER",
           },
           {
             id: "select-options-disabled",
-            labelName: "Disabled",
+            labelName: i18n.t("Disabled"),
             attrName: "disabled",
             setterType: "INPUT_SETTER",
             expectedType: VALIDATION_TYPES.BOOLEAN,
@@ -67,6 +67,7 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "select-option-mapped",
         labelName: i18n.t("editor.inspect.setter_label.mapped_option"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.map_data_option"),
         useCustomLayout: true,
         attrName: "mappedOption",
         setterType: "OPTION_MAPPED_SETTER",
@@ -78,6 +79,7 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
             labelName: i18n.t("editor.inspect.setter_label.label"),
             attrName: "labels",
             setterType: "OPTION_MAPPED_INPUT_SETTER",
+            placeholder: "{{item}}",
             expectedType: VALIDATION_TYPES.ARRAY,
           },
           {
@@ -85,6 +87,7 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
             labelName: i18n.t("editor.inspect.setter_label.value"),
             attrName: "values",
             setterType: "OPTION_MAPPED_INPUT_SETTER",
+            placeholder: "{{item}}",
             expectedType: VALIDATION_TYPES.ARRAY,
           },
           {
@@ -92,6 +95,7 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
             labelName: i18n.t("editor.inspect.setter_label.disabled"),
             attrName: "disables",
             setterType: "OPTION_MAPPED_INPUT_SETTER",
+            placeholder: "{{false}}",
             expectedType: VALIDATION_TYPES.ARRAY,
           },
         ],
@@ -99,12 +103,16 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "select-basic-defaultValue",
         labelName: i18n.t("editor.inspect.setter_label.default_value"),
+        labelDesc: i18n.t(
+          "editor.inspect.setter_tooltip.component_default_value",
+        ),
         attrName: "value",
         setterType: "INPUT_SETTER",
       },
       {
         id: "select-basic-placeholder",
         labelName: i18n.t("editor.inspect.setter_label.placeholder"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.placeholder"),
         attrName: "placeholder",
         setterType: "INPUT_SETTER",
         expectedType: VALIDATION_TYPES.STRING,
@@ -165,36 +173,13 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
     ],
   },
   {
-    id: "select-validation",
-    groupName: i18n.t("editor.inspect.setter_group.validation"),
-    children: [
-      {
-        id: "select-validation-required",
-        labelName: i18n.t("editor.inspect.setter_label.required_field"),
-        setterType: "DYNAMIC_SWITCH_SETTER",
-        expectedType: VALIDATION_TYPES.BOOLEAN,
-        useCustomLayout: true,
-        attrName: "required",
-      },
-      {
-        id: "select-validation-hide-message",
-        labelName: i18n.t(
-          "editor.inspect.setter_label.hide_validation_message",
-        ),
-        setterType: "DYNAMIC_SWITCH_SETTER",
-        expectedType: VALIDATION_TYPES.BOOLEAN,
-        useCustomLayout: true,
-        attrName: "hideValidationMessage",
-      },
-    ],
-  },
-  {
     id: "select-interaction",
     groupName: i18n.t("editor.inspect.setter_group.interaction"),
     children: [
       {
         id: "select-interaction-disabled",
         labelName: i18n.t("editor.inspect.setter_label.disabled"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.disabled"),
         attrName: "disabled",
         setterType: "INPUT_SETTER",
         placeholder: "{{false}}",
@@ -203,6 +188,7 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "select-interaction-readonly",
         labelName: i18n.t("editor.inspect.setter_label.read_only"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.read_only"),
         attrName: "readOnly",
         setterType: "INPUT_SETTER",
         placeholder: "{{false}}",
@@ -239,6 +225,7 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "select-adornments-tooltip",
         labelName: i18n.t("editor.inspect.setter_label.tooltip"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.tooltip"),
         attrName: "tooltipText",
         setterType: "INPUT_SETTER",
         expectedType: VALIDATION_TYPES.STRING,
@@ -252,8 +239,10 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "select-layout-hidden",
         labelName: i18n.t("editor.inspect.setter_label.hidden"),
-        setterType: "INPUT_SETTER",
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.hidden"),
+        setterType: "DYNAMIC_SWITCH_SETTER",
         attrName: "hidden",
+        useCustomLayout: true,
         placeholder: "false",
         expectedType: VALIDATION_TYPES.BOOLEAN,
       },
@@ -274,7 +263,7 @@ export const SELECT_PANEL_CONFIG: PanelConfig[] = [
             id: `select-style-color`,
             labelName: i18n.t("editor.inspect.setter_label.theme_color"),
             attrName: "colorScheme",
-            setterType: "COLOR_SELECT_SETTER",
+            setterType: "COLOR_PICKER_SETTER",
             defaultValue: "blue",
             options: colorSchemeOptions,
           },

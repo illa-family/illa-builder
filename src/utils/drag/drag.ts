@@ -7,7 +7,7 @@ import { displayNameActions } from "@/redux/currentApp/displayName/displayNameSl
 import { dottedLineSquareActions } from "@/redux/currentApp/editor/dottedLineSquare/dottedLineSquareSlice"
 import { dragShadowActions } from "@/redux/currentApp/editor/dragShadow/dragShadowSlice"
 
-export function startDrag(dragNode: ComponentNode) {
+export function startDrag(dragNode: ComponentNode, exist: boolean) {
   store.dispatch(configActions.updateShowDot(true))
   store.dispatch(
     componentsActions.updateComponentDraggingState({
@@ -15,6 +15,9 @@ export function startDrag(dragNode: ComponentNode) {
       isDragging: true,
     }),
   )
+  if (exist) {
+    store.dispatch(configActions.updateSelectedComponent([dragNode]))
+  }
 }
 
 export function endDrag(dragNode: ComponentNode) {
@@ -25,16 +28,6 @@ export function endDrag(dragNode: ComponentNode) {
       isDragging: false,
     }),
   )
-  if (
-    searchDsl(
-      store.getState().currentApp.editor.components.rootDsl,
-      dragNode.displayName,
-    ) == null
-  ) {
-    store.dispatch(
-      displayNameActions.removeDisplayNameReducer(dragNode.displayName),
-    )
-  }
   // remove dotted line square
   store.dispatch(
     dottedLineSquareActions.removeDottedLineSquareReducer(dragNode.displayName),
@@ -43,4 +36,14 @@ export function endDrag(dragNode: ComponentNode) {
   store.dispatch(
     dragShadowActions.removeDragShadowReducer(dragNode.displayName),
   )
+  if (
+    searchDsl(
+      store.getState().currentApp.editor.components,
+      dragNode.displayName,
+    ) == null
+  ) {
+    store.dispatch(
+      displayNameActions.removeDisplayNameReducer(dragNode.displayName),
+    )
+  }
 }

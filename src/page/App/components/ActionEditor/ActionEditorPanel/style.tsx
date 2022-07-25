@@ -18,15 +18,6 @@ export const panelScrollStyle = css`
   padding-bottom: 16px;
 `
 
-export const headerStyle = css`
-  display: flex;
-  align-items: center;
-  padding: 8px 16px 8px 0;
-  height: 48px;
-  border-bottom: 1px solid ${globalColor(`--${illaPrefix}-grayBlue-08`)};
-  box-sizing: border-box;
-`
-
 export const titleContainerStyle = css`
   display: flex;
   align-items: center;
@@ -109,10 +100,6 @@ export const headerButtonStyle = css`
   }
 `
 
-export const moreBtnStyle = css`
-  margin-right: 8px;
-`
-
 export const runBtnStyle = css`
   color: ${globalColor(`--${illaPrefix}-techPurple-02`)} !important;
   background-color: ${globalColor(`--${illaPrefix}-techPurple-07`)} !important;
@@ -125,18 +112,13 @@ export const runBtnStyle = css`
 `
 
 export const actionSelectStyle = css`
-  height: 32px;
   font-size: 14px;
-
-  & > div {
-    padding: 0 16px;
-  }
 `
 
 export const triggerSelectStyle = css`
   max-width: 400px;
-  border-radius: 8px !important;
 `
+
 export const resourceSelectContainerStyle = css``
 
 export const resourceSelectStyle = css`
@@ -283,12 +265,6 @@ export const moreListItemStyle = css`
 export const moreListItemWarnStyle = css`
   ${moreListItemStyle};
   color: ${globalColor(`--${illaPrefix}-red-03`)};
-`
-
-export const moreBtnMenuStyle = css`
-  padding: 8px 0;
-  width: 180px;
-  box-shadow: 0 2px 16px 0 ${globalColor(`--${illaPrefix}-blackAlpha-05`)};
 `
 
 export const handlerItemWrapperStyle = css`

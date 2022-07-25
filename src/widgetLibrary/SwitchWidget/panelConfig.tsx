@@ -1,8 +1,8 @@
 import { HorizontalStartIcon, HorizontalEndIcon } from "@illa-design/icon"
 import { PanelConfig } from "@/page/App/components/InspectPanel/interface"
 import { colorSchemeOptions } from "@/widgetLibrary/PublicSector/colorSchemeOptions"
-import i18n from "@/i18n/config"
 import { VALIDATION_TYPES } from "@/utils/validationFactory"
+import i18n from "@/i18n/config"
 
 export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
   {
@@ -12,6 +12,7 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "switch-basic-defaultValue",
         labelName: i18n.t("editor.inspect.setter_label.default_value"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.switch_default_value"),
         attrName: "value",
         setterType: "INPUT_SETTER",
         expectedType: VALIDATION_TYPES.BOOLEAN,
@@ -63,13 +64,6 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
           },
         ],
       },
-      {
-        id: "switch-label-labelWidth",
-        labelName: i18n.t("editor.inspect.setter_label.label_width"),
-        attrName: "labelWidth",
-        setterType: "INPUT_SETTER",
-        expectedType: VALIDATION_TYPES.NUMBER,
-      },
     ],
   },
   {
@@ -77,10 +71,9 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
     groupName: i18n.t("editor.inspect.setter_group.interaction"),
     children: [
       {
-        id: "image-interaction-tooltip",
+        id: "switch-interaction-event-handler",
         attrName: "events",
         labelName: i18n.t("editor.inspect.setter_label.event_handler"),
-        labelDesc: "xxxxx",
         setterType: "EVENT_HANDLER_SETTER",
         useCustomLayout: true,
         childrenSetter: [
@@ -88,14 +81,15 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
             id: "event",
             labelName: i18n.t("editor.inspect.setter_label.event"),
             setterType: "BASE_SELECT_SETTER",
-            attrName: "event",
+            attrName: "eventType",
             options: [{ label: "Change", value: "onChange" }],
           },
           {
-            id: "type",
+            id: "action",
             labelName: i18n.t("editor.inspect.setter_label.action"),
-            setterType: "BASE_SELECT_SETTER",
-            attrName: "type",
+            labelDesc: i18n.t("editor.inspect.setter_tooltip.action"),
+            setterType: "EVENT_ACTION_SELECT_SETTER",
+            attrName: "actionType",
             options: [
               {
                 label: i18n.t("editor.inspect.setter_label.trigger_query"),
@@ -117,44 +111,49 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
                 label: i18n.t("editor.inspect.setter_label.show_notification"),
                 value: "showNotification",
               },
-              {
-                label: i18n.t(
-                  "editor.inspect.setter_label.set_temporary_state",
-                ),
-                value: "state",
-              },
             ],
           },
           {
             id: "query",
-            labelName: "Query",
-            setterType: "BASE_SELECT_SETTER",
-            attrName: "targetId",
-            bindAttrName: "type",
+            labelName: i18n.t("Query"),
+            setterType: "EVENT_TARGET_ACTION_SELECT_SETTER",
+            attrName: "queryID",
+            bindAttrName: "actionType",
             shown: (type) => type === "datasource",
-            options: [],
+          },
+          {
+            id: "actionMethod",
+            labelName: i18n.t("Action Method"),
+            setterType: "BASE_SELECT_SETTER",
+            attrName: "widgetMethod",
+            bindAttrName: "queryID",
+            shown: (type) => type === "datasource",
+            // TODO: value should as same as action run method name that mounted on `globalData`
+            options: [{ label: "run", value: "executeAction" }],
           },
           {
             id: "component",
-            labelName: "Component",
+            labelName: i18n.t("Component"),
             setterType: "EVENT_TARGET_SELECT_SETTER",
-            attrName: "targetId",
-            bindAttrName: "type",
+            attrName: "widgetID",
+            bindAttrName: "actionType",
             shown: (type) => type === "widget",
-            options: [],
           },
           {
             id: "Method",
-            labelName: "Method",
-            setterType: "BASE_SELECT_SETTER",
-            attrName: "method",
-            bindAttrName: "type",
-            shown: (type) => type === "widget",
-            options: [
-              { label: "Set Value", value: "setValue" },
-              { label: "Clear Value", value: "clearValue" },
-              { label: "Toggle Value", value: "toggleValue" },
-            ],
+            labelName: i18n.t("Method"),
+            setterType: "EVENT_WIDGET_METHOD_SELECT_SETTER",
+            attrName: "widgetMethod",
+            bindAttrName: "widgetID",
+            shown: (widgetID) => !!widgetID,
+          },
+          {
+            id: "Value",
+            labelName: i18n.t("Value"),
+            setterType: "INPUT_SETTER",
+            attrName: "widgetTargetValue",
+            bindAttrName: "widgetMethod",
+            shown: (widgetMethod) => widgetMethod === "setValue",
           },
           {
             id: "disabled",
@@ -170,54 +169,53 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
             id: "script",
             setterType: "INPUT_SETTER",
             attrName: "script",
-            bindAttrName: "type",
+            bindAttrName: "actionType",
             expectedType: VALIDATION_TYPES.STRING,
             shown: (type) => type === "script",
           },
           {
             id: "URL",
-            labelName: "URL",
+            labelName: i18n.t("URL"),
             setterType: "INPUT_SETTER",
             attrName: "url",
-            bindAttrName: "type",
+            bindAttrName: "actionType",
             expectedType: VALIDATION_TYPES.STRING,
             shown: (type) => type === "openUrl",
           },
           {
             id: "newTab",
-            labelName: "New Tab",
+            labelName: i18n.t("New Tab"),
             setterType: "DYNAMIC_SWITCH_SETTER",
             expectedType: VALIDATION_TYPES.BOOLEAN,
             attrName: "newTab",
-            bindAttrName: "type",
+            bindAttrName: "actionType",
             useCustomLayout: true,
             shown: (type) => type === "openUrl",
           },
           {
             id: "title",
-            labelName: "Title",
+            labelName: i18n.t("Title"),
             setterType: "INPUT_SETTER",
             attrName: "title",
-            bindAttrName: "type",
+            bindAttrName: "actionType",
             expectedType: VALIDATION_TYPES.STRING,
             shown: (type) => type === "showNotification",
           },
           {
             id: "description",
-            labelName: "Description",
+            labelName: i18n.t("Description"),
             setterType: "INPUT_SETTER",
             expectedType: VALIDATION_TYPES.STRING,
             attrName: "description",
-            bindAttrName: "type",
-
+            bindAttrName: "actionType",
             shown: (type) => type === "showNotification",
           },
           {
             id: "notification-type",
-            labelName: "Type",
+            labelName: i18n.t("Type"),
             setterType: "BASE_SELECT_SETTER",
             attrName: "notificationType",
-            bindAttrName: "type",
+            bindAttrName: "actionType",
             shown: (type) => type === "showNotification",
             options: [
               { label: "Success", value: "success" },
@@ -228,34 +226,16 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
           },
           {
             id: "duration",
-            labelName: "Duration",
+            labelName: i18n.t("Duration"),
             setterType: "INPUT_SETTER",
             attrName: "duration",
-            bindAttrName: "type",
+            bindAttrName: "actionType",
             expectedType: VALIDATION_TYPES.NUMBER,
             shown: (type) => type === "showNotification",
           },
           {
-            id: "State",
-            labelName: "State",
-            setterType: "BASE_SELECT_SETTER",
-            attrName: "targetId",
-            bindAttrName: "type",
-            shown: (type) => type === "state",
-            options: [],
-          },
-          {
-            id: "value",
-            labelName: "Value",
-            setterType: "INPUT_SETTER",
-            attrName: "stateValue",
-            bindAttrName: "type",
-            shown: (type) => type === "state",
-          },
-          {
             id: "enabled",
-            labelName: "Only run when",
-            labelDesc: "xxxxx",
+            labelName: i18n.t("Only run when"),
             setterType: "INPUT_SETTER",
             expectedType: VALIDATION_TYPES.BOOLEAN,
             attrName: "enabled",
@@ -265,6 +245,7 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "switch-interaction-disabled",
         labelName: i18n.t("editor.inspect.setter_label.disabled"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.disabled"),
         attrName: "disabled",
         setterType: "INPUT_SETTER",
         placeholder: "{{false}}",
@@ -279,6 +260,7 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "switch-adornments-tooltip",
         labelName: i18n.t("editor.inspect.setter_label.tooltip"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.tooltip"),
         attrName: "tooltipText",
         setterType: "INPUT_SETTER",
         expectedType: VALIDATION_TYPES.STRING,
@@ -292,6 +274,7 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "switch-validation-required",
         labelName: i18n.t("editor.inspect.setter_label.required_field"),
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.required_field"),
         setterType: "DYNAMIC_SWITCH_SETTER",
         expectedType: VALIDATION_TYPES.BOOLEAN,
         useCustomLayout: true,
@@ -301,6 +284,9 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
         id: "switch-validation-hide-message",
         labelName: i18n.t(
           "editor.inspect.setter_label.hide_validation_message",
+        ),
+        labelDesc: i18n.t(
+          "editor.inspect.setter_tooltip.hide_validation_message",
         ),
         setterType: "DYNAMIC_SWITCH_SETTER",
         expectedType: VALIDATION_TYPES.BOOLEAN,
@@ -316,9 +302,11 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
       {
         id: "switch-layout-hidden",
         labelName: i18n.t("editor.inspect.setter_label.hidden"),
-        setterType: "INPUT_SETTER",
+        labelDesc: i18n.t("editor.inspect.setter_tooltip.hidden"),
+        setterType: "DYNAMIC_SWITCH_SETTER",
         attrName: "hidden",
         placeholder: "false",
+        useCustomLayout: true,
         expectedType: VALIDATION_TYPES.BOOLEAN,
       },
     ],
@@ -338,7 +326,7 @@ export const SWITCH_PANEL_CONFIG: PanelConfig[] = [
             id: "switch-style-radius",
             labelName: i18n.t("editor.inspect.setter_label.theme_color"),
             attrName: "colorScheme",
-            setterType: "COLOR_SELECT_SETTER",
+            setterType: "COLOR_PICKER_SETTER",
             defaultValue: "blue",
             options: colorSchemeOptions,
           },

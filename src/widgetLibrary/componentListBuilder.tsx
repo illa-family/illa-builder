@@ -8,7 +8,7 @@ import i18n from "@/i18n/config"
 
 export type SessionType = keyof typeof sessionTypeMapSessionNameKey
 
-const sessionTypeMapSessionNameKey = {
+export const sessionTypeMapSessionNameKey = {
   COMMON: i18n.t("editor.widget_picker.sessions.commonly"),
   INPUTS: i18n.t("editor.widget_picker.sessions.inputs"),
   SELECT: i18n.t("editor.widget_picker.sessions.selects"),
