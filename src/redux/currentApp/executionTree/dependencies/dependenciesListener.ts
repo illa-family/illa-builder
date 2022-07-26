@@ -43,8 +43,10 @@ export function setupDependenciesListeners(
   const subscriptions = [
     startListening({
       matcher: isAnyOf(
+        componentsActions.addComponentReducer,
         componentsActions.updateComponentPropsReducer,
         componentsActions.deleteComponentNodeReducer,
+        componentsActions.copyComponentNodeReducer,
         actionActions.addActionItemReducer,
         actionActions.removeActionItemReducer,
         actionActions.updateActionItemReducer,

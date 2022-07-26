@@ -102,9 +102,6 @@ export const Editor: FC = () => {
           ),
         )
         dispatch(
-          executionActions.setExecutionReducer(response.data.executionState),
-        )
-        dispatch(
           dragShadowActions.updateDragShadowReducer(
             response.data.dragShadowState,
           ),
@@ -151,7 +148,7 @@ export const Editor: FC = () => {
             <DataWorkspace css={applyLeftPanelStyle(showLeftPanel)} />
             <div css={middlePanelStyle}>
               <CanvasPanel css={centerPanelStyle} />
-              <ActionEditor css={applyBottomPanelStyle(showBottomPanel)} />
+              {/*<ActionEditor css={applyBottomPanelStyle(showBottomPanel)} />*/}
             </div>
             <WidgetPickerEditor css={applyRightPanelStyle(showRightPanel)} />
           </div>

@@ -7,7 +7,6 @@ import { appInfoActions } from "@/redux/currentApp/appInfo/appInfoSlice"
 import { componentsActions } from "@/redux/currentApp/editor/components/componentsSlice"
 import { actionActions } from "@/redux/currentApp/action/actionSlice"
 import { dependenciesActions } from "@/redux/currentApp/executionTree/dependencies/dependenciesSlice"
-import { executionActions } from "@/redux/currentApp/executionTree/execution/executionSlice"
 import { dragShadowActions } from "@/redux/currentApp/editor/dragShadow/dragShadowSlice"
 import { dottedLineSquareActions } from "@/redux/currentApp/editor/dottedLineSquare/dottedLineSquareSlice"
 import { displayNameActions } from "@/redux/currentApp/displayName/displayNameSlice"
@@ -41,9 +40,6 @@ export const Deploy: FC = () => {
           dependenciesActions.setDependenciesReducer(
             response.data.dependenciesState,
           ),
-        )
-        dispatch(
-          executionActions.setExecutionReducer(response.data.executionState),
         )
         dispatch(
           dragShadowActions.updateDragShadowReducer(

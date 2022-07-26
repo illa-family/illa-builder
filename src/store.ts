@@ -59,8 +59,8 @@ const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(logger)
       .concat(reduxAsync)
+      .concat(logger)
       .prepend(listenerMiddleware.middleware),
 })
 
