@@ -8,10 +8,7 @@ export interface PanelHeaderActionProps {
 
 export interface PanelLabelProps {
   labelName?: any
-  labelNameOption?: Record<string, string>
   labelDesc?: string
-  labelDescOption?: Record<string, string>
-  transComponents?: Record<string, any>
   isInList?: boolean
 }
 
@@ -26,6 +23,7 @@ export interface PanelFieldConfig extends PanelLabelProps {
   isSetterSingleRow?: boolean
   defaultValue?: any
   placeholder?: string
+  iconName?: string
   shown?: (value: any | { [attrName: string]: any }) => boolean
   bindAttrName?: string | string[]
 }

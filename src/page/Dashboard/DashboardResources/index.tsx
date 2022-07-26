@@ -2,8 +2,10 @@ import { FC, useMemo } from "react"
 import { useSelector } from "react-redux"
 import { css } from "@emotion/react"
 import { useTranslation } from "react-i18next"
+// TODO: @aruseito Abstract into tool function
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
+import timezone from "dayjs/plugin/timezone"
 import { Button } from "@illa-design/button"
 import { Empty } from "@illa-design/empty"
 import { Table } from "@illa-design/table"
@@ -26,8 +28,11 @@ import {
   tableStyle,
 } from "./style"
 import { getIconFromResourceType } from "@/page/App/components/Actions/getIcon"
+import { cloneDeep } from "lodash"
+import { Divider } from "@illa-design/divider"
 
 dayjs.extend(utc)
+dayjs.extend(timezone)
 
 function NameColComponent(type: ResourceType, text: string) {
   const icon = getIconFromResourceType(type, "24px")
@@ -47,14 +52,15 @@ function DbNameColComponent(text: string) {
   if (text) {
     return <span css={tableNormalTextStyle}>{text}</span>
   } else {
-    return <span css={tableInfoTextStyle}>Null</span>
+    return <span css={tableInfoTextStyle}>-</span>
   }
 }
 
 function CtimeColComponent(text: string) {
+  const timezone = dayjs.tz.guess()
   return (
     <span css={tableInfoTextStyle}>
-      {dayjs.utc(text).format("YYYY-MM-DD HH:mm:ss")}
+      {dayjs(text).tz(timezone).format("YYYY-MM-DD HH:mm:ss")}
     </span>
   )
 }
@@ -106,7 +112,12 @@ export const DashboardResources: FC = () => {
   )
   const data = useMemo(() => {
     const result: any[] = []
-    resourcesList.forEach((item: Resource, idx: number) => {
+      const tmpResourcesList = cloneDeep(resourcesList)
+      tmpResourcesList
+          .sort((a, b) => {
+              return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          })
+          .forEach((item: Resource, idx: number) => {
       result.push({
         nameCol: NameColComponent(item.resourceType, item.resourceName),
         typeCol: TypeColComponent(item.resourceType),
@@ -126,6 +137,7 @@ export const DashboardResources: FC = () => {
             {t("dashboard.resources.create_resources")}
           </Button>
         </div>
+        <Divider direction="horizontal" />
         {resourcesList?.length ? (
           <Table
             _css={tableStyle}
